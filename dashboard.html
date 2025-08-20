@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Samvaad • Dashboard</title>
+    <style>
+      :root { --primary:#2563eb; --accent:#10b981; }
+      *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f7f9fc;color:#0f172a}
+      .top{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0}
+      .brand{display:flex;align-items:center;gap:10px}
+      .logo{width:36px;height:36px;border-radius:10px;background:conic-gradient(from 210deg,#2563eb,#10b981);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
+      .wrap{max-width:1000px;margin:20px auto;padding:0 16px}
+      .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;box-shadow:0 6px 20px rgba(2,6,23,0.06)}
+      .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+      @media(max-width:800px){.row{grid-template-columns:1fr}}
+      button{padding:10px 14px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-weight:700;cursor:pointer}
+      .muted{color:#64748b}
+      .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#f1f5f9;color:#0f172a;font-size:12px;margin-right:6px}
+    </style>
+  </head>
+  <body>
+    <div class="top">
+      <div class="brand">
+        <div class="logo">स</div>
+        <strong>Samvaad</strong>
+      </div>
+      <div>
+        <span id="user-pill" class="pill">Loading…</span>
+        <button id="logout">Logout</button>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="row">
+        <div class="card">
+          <h3>Welcome</h3>
+          <p class="muted" id="hello">Fetching user…</p>
+        </div>
+        <div class="card">
+          <h3>Next steps</h3>
+          <p class="muted">- Chats, Status, Online Users tabs add karenge (Stitch UI se)</p>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+      import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyBIHeGBPieB4Q8hzYv-tmtRvxwHlY-8HiE",
+        authDomain: "samvaad-7970b.firebaseapp.com",
+        projectId: "samvaad-7970b",
+        storageBucket: "samvaad-7970b.firebasestorage.app",
+        messagingSenderId: "246840076262",
+        appId: "1:246840076262:web:9458559ec7afa340541827"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+
+      const hello = document.getElementById('hello');
+      const pill = document.getElementById('user-pill');
+      const logoutBtn = document.getElementById('logout');
+
+      onAuthStateChanged(auth, (user) => {
+        if (!user) {
+          // Not logged in -> back to login page
+          window.location.href = "./";
+        } else {
+          const name = user.displayName || user.email || user.phoneNumber || 'User';
+          hello.textContent = "Welcome back, " + name + "!";
+          pill.textContent = "UID: " + user.uid.slice(0,8) + "…";
+        }
+      });
+
+      logoutBtn.onclick = async () => {
+        await signOut(auth);
+        window.location.href = "./";
+      };
+    </script>
+  </body>
+</html>
