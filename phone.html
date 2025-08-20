@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Samvaad • Phone Login</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;600;800" />
+    <style>
+      body{margin:0;background:#f7f9fc;color:#0f172a;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+      .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+      .card{width:100%;max-width:420px;background:#fff;border:1px solid #e5e7eb;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:20px}
+      .brand{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+      .logo{width:36px;height:36px;border-radius:10px;background:conic-gradient(from 210deg,#2563eb,#10b981);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
+      input{width:100%;padding:12px 14px;border:1px solid #e5e7eb;border-radius:10px;font-size:16px;outline:none}
+      input:focus{border-color:#93c5fd;box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+      button{width:100%;padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+      button.secondary{background:#10b981}
+      .muted{font-size:12px;color:#64748b;text-align:center;margin-top:8px}
+      .error{color:#b91c1c;margin-top:8px;display:none}
+      .ok{color:#065f46;margin-top:8px;display:none}
+      .otp{display:flex;gap:8px;justify-content:space-between;margin-top:10px}
+      .otp input{width:44px;text-align:center;font-size:20px;padding:10px}
+      #recaptcha-container{margin-top:12px;display:flex;justify-content:center}
+      .row{display:flex;gap:8px;margin-top:10px}
+      .link{display:inline-block;text-align:center;width:100%;padding:10px;border-radius:10px;background:#f1f5f9;color:#0f172a;font-weight:700;text-decoration:none}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="card">
+        <div class="brand">
+          <div class="logo">स</div>
+          <div>
+            <strong>Samvaad</strong>
+            <div class="muted">Login with phone + OTP</div>
+          </div>
+        </div>
+
+        <div id="step-phone">
+          <input id="phone" placeholder="Enter phone e.g. +91XXXXXXXXXX" />
+          <div id="recaptcha-container"></div>
+          <button id="sendBtn">Send OTP</button>
+          <div class="muted">Tip: Dev testing numbers work without SMS.</div>
+          <div class="row">
+            <a class="link" href="./index.html">Use email login</a>
+          </div>
+          <div id="msg" class="error"></div>
+          <div id="ok" class="ok"></div>
+        </div>
+
+        <div id="step-otp" style="display:none;">
+          <div class="muted">OTP sent. Enter 6-digit code</div>
+          <div class="otp">
+            <input maxlength="1" />
+            <input maxlength="1" />
+            <input maxlength="1" />
+            <input maxlength="1" />
+            <input maxlength="1" />
+            <input maxlength="1" />
+          </div>
+          <button id="verifyBtn" class="secondary" style="margin-top:12px;">Verify OTP</button>
+          <div id="msg2" class="error"></div>
+          <div id="ok2" class="ok"></div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+      import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+      import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyBIHeGBPieB4Q8hzYv-tmtRvxwHlY-8HiE",
+        authDomain: "samvaad-7970b.firebaseapp.com",
+        projectId: "samvaad-7970b",
+        storageBucket: "samvaad-7970b.firebasestorage.app",
+        messagingSenderId: "246840076262",
+        appId: "1:246840076262:web:9458559ec7afa340541827"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      const stepPhone = document.getElementById('step-phone');
+      const stepOtp = document.getElementById('step-otp');
+      const phoneInput = document.getElementById('phone');
+      const sendBtn = document.getElementById('sendBtn');
+      const verifyBtn = document.getElementById('verifyBtn');
+      const msg = document.getElementById('msg');
+      const ok = document.getElementById('ok');
+      const msg2 = document.getElementById('msg2');
+      const ok2 = document.getElementById('ok2');
+      const recaptchaContainerId = 'recaptcha-container';
+      let confirmationResult = null;
+
+      function show(el, text, good=false){ el.style.display='block'; el.textContent=text; (good? (el.className='ok') : (el.className='error')); }
+      function hideAll(){ msg.style.display='none'; ok.style.display='none'; msg2.style.display='none'; ok2.style.display='none'; }
+
+      function setupRecaptcha() {
+        if (!window.recaptchaVerifier) {
+          window.recaptchaVerifier = new RecaptchaVerifier(auth, recaptchaContainerId, { size:'normal' });
+        }
+      }
+
+      async function upsertUserIndex(user) {
+        const ref = doc(db, "users", user.uid);
+        await setDoc(ref, {
+          uid: user.uid,
+          displayName: user.displayName || null,
+          email: user.email || null,
+          phone: user.phoneNumber || null,
+          photoURL: user.photoURL || null,
+          updatedAt: Date.now()
+        }, { merge: true });
+      }
+
+      sendBtn.addEventListener('click', async () => {
+        hideAll();
+        try {
+          const phone = phoneInput.value.trim();
+          if (!/^\+\d{10,15}$/.test(phone)) return show(msg, 'Use country code, e.g. +91XXXXXXXXXX');
+          setupRecaptcha();
+          confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
+          stepPhone.style.display = 'none';
+          stepOtp.style.display = 'block';
+          show(ok2, 'OTP sent. Check SMS (or use test code).', true);
+        } catch (e) {
+          show(msg, e.message || 'Failed to send OTP');
+        }
+      });
+
+      verifyBtn.addEventListener('click', async () => {
+        hideAll();
+        try {
+          const digits = Array.from(stepOtp.querySelectorAll('.otp input')).map(i => i.value).join('');
+          if (digits.length !== 6) return show(msg2, 'Enter 6-digit OTP');
+          const result = await confirmationResult.confirm(digits);
+          await upsertUserIndex(result.user);
+          show(ok2, 'Login success! Redirecting…', true);
+          setTimeout(() => window.location.href = './dashboard.html', 400);
+        } catch (e) {
+          show(msg2, e.message || 'Invalid code');
+        }
+      });
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // already logged-in: go dashboard
+          window.location.href = './dashboard.html';
+        }
+      });
+    </script>
+  </body>
+</html>
