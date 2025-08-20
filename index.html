@@ -5,13 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Samvaad • Login</title>
     <link rel="stylesheet" href="./style.css" />
-    <!-- Icons (optional) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      .topbar{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#ffffffcc;border-bottom:1px solid #eef2ff;backdrop-filter:saturate(180%) blur(10px)}
+      .brand-mini{display:flex;align-items:center;gap:8px}
+      .brand-mini .logo{width:28px;height:28px;border-radius:8px;background:conic-gradient(from 210deg,#2563eb,#10b981);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
+      .top-btn{padding:8px 12px;border:none;border-radius:10px;background:#e8f3f1;color:#0f172a;font-weight:700;cursor:pointer}
+      .alt-link{display:block;margin-top:10px;text-align:center;background:#f1f5f9;border-radius:10px;padding:10px;font-weight:700;color:#0f172a;text-decoration:none}
+      @media (max-width:650px){ .topbar{padding:8px 10px} }
+    </style>
   </head>
   <body>
+    <div class="topbar">
+      <div class="brand-mini">
+        <div class="logo">स</div>
+        <strong>Samvaad</strong>
+      </div>
+      <button class="top-btn" id="go-phone">Use phone OTP</button>
+    </div>
+
     <div class="container" id="container">
-      <!-- Forms box -->
       <div class="form-box login">
         <form id="login-form" onsubmit="return false;">
           <h1>Welcome back</h1>
@@ -27,6 +41,7 @@
             <a id="forgot-link" href="javascript:void(0)">Forgot password?</a>
           </div>
           <button id="login-btn" class="btn">Sign in</button>
+          <a class="alt-link" href="./phone.html">Use phone OTP</a>
           <p class="muted" id="login-msg"></p>
           <p>Or continue with</p>
           <div class="social-icons">
@@ -53,11 +68,11 @@
             <i class="bx bx-lock-alt"></i>
           </div>
           <button id="signup-btn" class="btn">Sign up</button>
+          <a class="alt-link" href="./phone.html">Use phone OTP</a>
           <p class="muted" id="signup-msg"></p>
         </form>
       </div>
 
-      <!-- Toggle panels -->
       <div class="toggle-box">
         <div class="toggle-panel toggle-left">
           <h1>New here?</h1>
@@ -72,16 +87,13 @@
       </div>
     </div>
 
-    <!-- BX icons (optional) -->
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-
-    <!-- Firebase Email/Password logic (next step में भरेंगे) -->
     <script type="module" src="./src/auth.js"></script>
-    <!-- UI toggle control -->
     <script>
       const container = document.getElementById('container');
       document.getElementById('show-register').onclick = () => container.classList.add('active');
       document.getElementById('show-login').onclick = () => container.classList.remove('active');
+      document.getElementById('go-phone').onclick = () => window.location.href = './phone.html';
     </script>
   </body>
 </html>
