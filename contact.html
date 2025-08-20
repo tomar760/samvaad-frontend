@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Samvaad • Contacts</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;600;800" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <style>
+      body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f7f9fc;color:#0f172a}
+      .container{max-width:1000px;margin:0 auto;padding:16px}
+      .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 6px 20px rgba(2,6,23,0.06)}
+      .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#f1f5f9;font-size:12px}
+    </style>
+  </head>
+  <body>
+    <header class="sticky top-0 z-20 bg-white/90 border-b border-gray-100">
+      <div class="container flex items-center justify-between py-3">
+        <div class="flex items-center gap-2">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-emerald-500 text-white flex items-center justify-center font-extrabold">स</div>
+          <strong>Samvaad</strong>
+          <span id="user-pill" class="pill ml-2 hidden sm:inline">Loading…</span>
+        </div>
+        <div class="flex gap-2">
+          <a href="./dashboard.html" class="px-3 py-2 rounded-xl bg-gray-100 text-sm font-semibold">Dashboard</a>
+          <button id="logout" class="px-3 py-2 rounded-xl bg-emerald-100 text-emerald-900 text-sm font-bold">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container mt-4">
+      <div class="card p-4">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 class="text-xl font-extrabold">Contacts</h2>
+            <p class="text-sm text-gray-500">अपने फोन के contacts से Samvaad users ढूँढो • बाकी को invite करो</p>
+          </div>
+          <div class="flex gap-2">
+            <button id="pick" class="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold">Pick contacts</button>
+            <button id="clear" class="px-4 py-2 rounded-xl bg-gray-100 font-semibold">Clear</button>
+          </div>
+        </div>
+
+        <div id="support" class="mt-3 text-sm text-amber-700 hidden">
+          Note: Contacts Picker API सिर्फ supported ब्राउज़र/डिवाइस पर चलता है (Chrome/Android, HTTPS).
+        </div>
+
+        <div id="results" class="mt-4 grid gap-3">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+      import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+      import { getFirestore, collection, query, where, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyBIHeGBPieB4Q8hzYv-tmtRvxwHlY-8HiE",
+        authDomain: "samvaad-7970b.firebaseapp.com",
+        projectId: "samvaad-7970b",
+        storageBucket: "samvaad-7970b.firebasestorage.app",
+        messagingSenderId: "246840076262",
+        appId: "1:246840076262:web:9458559ec7afa340541827"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      const userPill = document.getElementById('user-pill');
+      const results = document.getElementById('results');
+      const support = document.getElementById('support');
+
+      onAuthStateChanged(auth, (user) => {
+        if (!user) return (window.location.href = "./");
+        const name = user.displayName || (user.email ? user.email.split("@")[0] : "User");
+        userPill.textContent = name;
+        userPill.classList.remove('hidden');
+
+        // Ensure user index exists in Firestore (users collection)
+        upsertUserIndex(user).catch(()=>{});
+      });
+
+      document.getElementById('logout').onclick = async () => {
+        await signOut(auth);
+        window.location.href = "./";
+      };
+
+      // Create/Update users index doc for current user
+      async function upsertUserIndex(user) {
+        const ref = doc(db, "users", user.uid);
+        await setDoc(ref, {
+          uid: user.uid,
+          displayName: user.displayName || null,
+          email: user.email || null,
+          phone: user.phoneNumber || null,
+          photoURL: user.photoURL || null,
+          updatedAt: Date.now()
+        }, { merge: true });
+      }
+
+      // Normalize phone to E.164-ish simple cleaner (basic)
+      function normPhone(s) {
+        if (!s) return null;
+        let x = s.replace(/[^\d+]/g, "");
+        if (x.startsWith("00")) x = "+" + x.slice(2);
+        if (!x.startsWith("+")) return null; // require country code
+        // simple length check
+        if (x.length < 10 || x.length > 16) return null;
+        return x;
+      }
+
+      function contactCard(row) {
+        const div = document.createElement('div');
+        div.className = "border border-gray-200 rounded-xl p-3 flex items-center justify-between gap-3";
+        div.innerHTML = `
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold">
+              ${row.initials}
+            </div>
+            <div class="min-w-0">
+              <div class="font-semibold truncate">${row.name || 'Unknown'}</div>
+              <div class="text-xs text-gray-500 truncate">${row.phone || row.email || ''}</div>
+            </div>
+          </div>
+          <div class="flex gap-2 shrink-0">
+            ${row.isUser
+              ? `<a href="./chat.html?uid=${encodeURIComponent(row.uid)}" class="px-3 py-2 rounded-xl bg-emerald-100 text-emerald-900 text-sm font-bold">Message</a>`
+              : `<button data-invite="${row.phone || row.email || ''}" class="px-3 py-2 rounded-xl bg-blue-600 text-white text-sm font-semibold">Invite</button>`
+            }
+          </div>
+        `;
+        return div;
+      }
+
+      function initialsFromName(n) {
+        if (!n) return "U";
+        const parts = n.trim().split(/\s+/).slice(0,2);
+        return parts.map(p => p[0]?.toUpperCase()).join('') || "U";
+      }
+
+      async function findSamvaadUsersByPhones(phones) {
+        // Firestore doesn't support "where in" with more than 10 items; batch queries
+        const chunks = [];
+        for (let i=0;i<phones.length;i+=10) chunks.push(phones.slice(i,i+10));
+        const found = new Map();
+        for (const c of chunks) {
+          const qRef = query(collection(db,"users"), where("phone","in", c));
+          const snap = await getDocs(qRef);
+          snap.forEach(d => { const u = d.data(); if (u.phone) found.set(u.phone, u); });
+        }
+        return found;
+      }
+
+      async function findSamvaadUsersByEmails(emails) {
+        const chunks = [];
+        for (let i=0;i<emails.length;i+=10) chunks.push(emails.slice(i,i+10));
+        const found = new Map();
+        for (const c of chunks) {
+          const qRef = query(collection(db,"users"), where("email","in", c));
+          const snap = await getDocs(qRef);
+          snap.forEach(d => { const u = d.data(); if (u.email) found.set(u.email, u); });
+        }
+        return found;
+      }
+
+      async function pickContacts() {
+        if (!('contacts' in navigator) || !('select' in navigator.contacts)) {
+          support.classList.remove('hidden');
+          return;
+        }
+        support.classList.add('hidden');
+
+        try {
+          const props = ["name","tel","email","icon"];
+          const opts = { multiple: true };
+          const list = await navigator.contacts.select(props, opts);
+
+          results.innerHTML = "";
+          if (!list || list.length === 0) {
+            results.innerHTML = `<div class="text-sm text-gray-500">No contacts selected.</div>`;
+            return;
+          }
+
+          // Collect normalized phones and emails for matching
+          const phones = [];
+          const emails = [];
+          const rows = list.map(c => {
+            const name = Array.isArray(c.name) ? c.name[0] : c.name;
+            const tel = Array.isArray(c.tel) ? c.tel : c.tel;
+            const email = Array.isArray(c.email) ? c.email : c.email;
+
+            const phone = normPhone(tel || "");
+            if (phone) phones.push(phone);
+            if (email) emails.push(String(email).toLowerCase());
+
+            return {
+              raw: c,
+              name: name || (phone || email || "Unknown"),
+              phone,
+              email: email ? String(email).toLowerCase() : null,
+              initials: initialsFromName(name || (phone || email))
+            };
+          });
+
+          // Query Firestore for matches
+          const phoneMatches = phones.length ? await findSamvaadUsersByPhones(phones) : new Map();
+          const emailMatches = emails.length ? await findSamvaadUsersByEmails(emails) : new Map();
+
+          // Render rows: first users, then invites
+          const userRows = [];
+          const inviteRows = [];
+
+          rows.forEach(r => {
+            let matched = null;
+            if (r.phone && phoneMatches.has(r.phone)) matched = phoneMatches.get(r.phone);
+            else if (r.email && emailMatches.has(r.email)) matched = emailMatches.get(r.email);
+
+            if (matched) {
+              userRows.push({
+                ...r,
+                isUser: true,
+                uid: matched.uid,
+                name: matched.displayName || r.name
+              });
+            } else {
+              inviteRows.push({ ...r, isUser: false });
+            }
+          });
+
+          if (userRows.length) {
+            const h = document.createElement('h3');
+            h.className = "text-base font-bold";
+            h.textContent = "On Samvaad";
+            results.appendChild(h);
+            userRows.sort((a,b)=>a.name.localeCompare(b.name)).forEach(row => results.appendChild(contactCard(row)));
+          }
+
+          if (inviteRows.length) {
+            const h2 = document.createElement('h3');
+            h2.className = "text-base font-bold mt-2";
+            h2.textContent = "Invite to Samvaad";
+            results.appendChild(h2);
+            inviteRows.sort((a,b)=> (a.name||"").localeCompare(b.name||"")).forEach(row => results.appendChild(contactCard(row)));
+          }
+
+          // Invite handler
+          results.querySelectorAll('[data-invite]').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const to = btn.getAttribute('data-invite') || "";
+              const shareText = `Join me on Samvaad! ${location.origin}${location.pathname.replace(/contacts\.html$/,'')}`;
+              if (navigator.share) {
+                navigator.share({ title:"Samvaad invite", text:shareText }).catch(()=>{});
+              } else {
+                alert("Copy and share:\n" + shareText);
+              }
+            });
+          });
+
+        } catch (e) {
+          console.error(e);
+          results.innerHTML = `<div class="text-sm text-rose-700">Contacts access failed or denied.</div>`;
+        }
+      }
+
+      document.getElementById('pick').addEventListener('click', pickContacts);
+      document.getElementById('clear').addEventListener('click', () => results.innerHTML = "");
+    </script>
+  </body>
+</html>
