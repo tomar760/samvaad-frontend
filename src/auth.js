@@ -120,3 +120,8 @@ forgotLink?.addEventListener('click', async () => {
 // Auto-redirect if already logged in
 onAuthStateChanged(auth, (user) => {
   if (user) {
+    // If user is already signed in on the login page, send to dashboard
+    // Use small delay to avoid flicker on first load
+    setTimeout(goDashboard, 200);
+  }
+});
