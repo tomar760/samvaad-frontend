@@ -272,4 +272,141 @@
       const firebaseConfig = {
         apiKey: "AIzaSyBIHeGBPieB4Q8hzYv-tmtRvxwHlY-8HiE",
         authDomain: "samvaad-7970b.firebaseapp.com",
-        projectId: "samv
+        projectId: "samvaad-7970b",
+        storageBucket: "samvaad-7970b.firebasestorage.app",
+        messagingSenderId: "246840076262",
+        appId: "1:246840076262:web:9458559ec7afa340541827"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      // Auth bind
+      const nameEl = document.getElementById('user-name');
+      const phoneEl = document.getElementById('acc-phone');
+      const accName = document.getElementById('acc-name');
+      const uidPill = document.getElementById('uid-pill');
+
+      onAuthStateChanged(auth, (user)=>{
+        if(!user) return location.href = './';
+        const n = user.displayName || user.phoneNumber || user.email || 'User';
+        if (nameEl) nameEl.textContent = n;
+        if (accName) accName.textContent = n;
+        if (phoneEl) phoneEl.textContent = user.phoneNumber || '—';
+        if (uidPill) uidPill.textContent = `UID: ${user.uid.slice(0,6)}…`;
+        me = user;
+        setPeerFromURL();
+      });
+
+      // Robust logout
+      const logoutBtn = document.getElementById('logout');
+      if (logoutBtn){
+        logoutBtn.addEventListener('click', async ()=>{
+          try{
+            logoutBtn.disabled = true;
+            logoutBtn.textContent = 'Logging out…';
+            await signOut(auth);
+          }catch(e){} finally{
+            window.location.href = './';
+          }
+        });
+      }
+
+      // View switcher
+      function switchView(name){
+        const map = {
+          chats: document.getElementById('view-chats'),
+          settings: document.getElementById('view-settings'),
+          communities: document.getElementById('view-communities'),
+          updates: document.getElementById('view-updates'),
+          calls: document.getElementById('view-calls'),
+        };
+        Object.values(map).forEach(el => { if (el) el.classList.add('hidden'); });
+        if (map[name]) map[name].classList.remove('hidden');
+        const vt = document.getElementById('view-title');
+        if (vt) vt.textContent = name[0].toUpperCase()+name.slice(1);
+        document.querySelectorAll('[data-nav]').forEach(b=>{
+          const on = b.getAttribute('data-nav')===name;
+          b.classList.toggle('bg-mint-50', on);
+          b.classList.toggle('border', on);
+          b.classList.toggle('border-line', on);
+        });
+      }
+      ['chats','settings','communities','updates','calls'].forEach(n=>{
+        const btn = document.querySelector(`[data-nav="${n}"]`);
+        if (btn) btn.addEventListener('click', ()=> switchView(n));
+      });
+
+      // Chats glue
+      let me=null, peer=null, unsub=null;
+      const tl = document.getElementById('timeline');
+      const input = document.getElementById('msg');
+      const sendBtn = document.getElementById('send');
+      const peerNameEl = document.getElementById('peer-name');
+      const peerStatusEl = document.getElementById('peer-status');
+      const emptyEl = document.getElementById('chat-empty');
+
+      function bubble(text, mine=false){
+        if (!tl) return;
+        const wrap = document.createElement('div');
+        wrap.className = 'flex items-end gap-3 p-2 ' + (mine?'justify-end':'');
+        wrap.innerHTML = mine
+          ? `<div class="flex flex-1 flex-col gap-1 items-end">
+               <p class="text-chat-sub text-[13px] max-w-[360px] text-right">You</p>
+               <p class="max-w-[360px] rounded-xl px-4 py-3 bg-chat-mint text-[#12211f] shadow-[0_10px_24px_rgba(0,0,0,.25)]">${text}</p>
+             </div>
+             <div class="w-10 h-10 rounded-full bg-cover bg-center shrink-0" style="background-image:url('https://i.pravatar.cc/100?img=5')"></div>`
+          : `<div class="w-10 h-10 rounded-full bg-cover bg-center shrink-0" style="background-image:url('https://i.pravatar.cc/100?img=12')"></div>
+             <div class="flex flex-1 flex-col gap-1 items-start">
+               <p class="text-chat-sub text-[13px] max-w-[360px]">${(peerNameEl?.textContent || 'User')}</p>
+               <p class="max-w-[360px] rounded-xl px-4 py-3 bg-chat-panel text-white shadow-[0_10px_24px_rgba(0,0,0,.25)]">${text}</p>
+             </div>`;
+        tl.appendChild(wrap);
+        tl.scrollTop = tl.scrollHeight;
+      }
+
+      async function setPeerFromURL(){
+        const q = new URLSearchParams(location.search);
+        const pid = q.get('peer');
+        if (!pid) return;
+        try{
+          const snap = await getDoc(doc(db,'users',pid));
+          if (snap.exists()){
+            peer = snap.data();
+            if (peerNameEl) peerNameEl.textContent = peer.displayName || peer.phone || peer.email || 'User';
+            if (peerStatusEl) peerStatusEl.textContent = 'Secure chat';
+            if (emptyEl) emptyEl.remove();
+            switchView('chats');
+            listenPair();
+          }
+        }catch(e){}
+      }
+
+      function listenPair(){
+        if (!me || !peer) return;
+        if (unsub) unsub();
+        const qAll = query(collection(db,'messages'), orderBy('ts','asc'));
+        unsub = onSnapshot(qAll, s=>{
+          if (!tl) return;
+          tl.innerHTML = '';
+          s.forEach(d=>{
+            const m = d.data();
+            if ((m.from===me.uid && m.to===peer.uid) || (m.from===peer.uid && m.to===me.uid)){
+              bubble(m.text, m.from===me.uid);
+            }
+          });
+          tl.scrollTop = tl.scrollHeight;
+        });
+      }
+
+      sendBtn?.addEventListener('click', async ()=>{
+        if (!peer) { alert('Select a user first (?peer=UID)'); return; }
+        const text = (input?.value || '').trim();
+        if (!text) return;
+        await addDoc(collection(db,'messages'), { from: me.uid, to: peer.uid, text, ts: serverTimestamp() });
+        if (input) input.value = '';
+      });
+    </script>
+  </body>
+</html>
