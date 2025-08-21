@@ -4,64 +4,109 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Samvaad • Phone Login</title>
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;600;800" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
-      body{margin:0;background:#f7f9fc;color:#0f172a;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-      .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
-      .card{width:100%;max-width:420px;background:#fff;border:1px solid #e5e7eb;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:20px}
-      .brand{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-      .logo{width:36px;height:36px;border-radius:10px;background:conic-gradient(from 210deg,#2563eb,#10b981);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
-      input{width:100%;padding:12px 14px;border:1px solid #e5e7eb;border-radius:10px;font-size:16px;outline:none}
-      input:focus{border-color:#93c5fd;box-shadow:0 0 0 3px rgba(37,99,235,.15)}
-      button{width:100%;padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-size:16px;font-weight:700;cursor:pointer}
-      button.secondary{background:#10b981}
-      .muted{font-size:12px;color:#64748b;text-align:center;margin-top:8px}
-      .error{color:#b91c1c;margin-top:8px;display:none}
-      .ok{color:#065f46;margin-top:8px;display:none}
-      .otp{display:flex;gap:8px;justify-content:space-between;margin-top:10px}
-      .otp input{width:44px;text-align:center;font-size:20px;padding:10px}
-      #recaptcha-container{margin-top:12px;display:flex;justify-content:center}
-      .row{display:flex;gap:8px;margin-top:10px}
-      .link{display:inline-block;text-align:center;width:100%;padding:10px;border-radius:10px;background:#f1f5f9;color:#0f172a;font-weight:700;text-decoration:none}
+      :root { --primary:#2563eb; --accent:#10b981; --bg:#f7f9fc; --text:#0f172a; --muted:#64748b; }
+      * { box-sizing: border-box; }
+      body { margin:0; font-family:"Poppins", system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:var(--bg); color:var(--text); }
+      .wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:18px; }
+      .card {
+        width:100%; max-width:460px; background:#fff; border-radius:24px;
+        border:1px solid #eef2ff; box-shadow:0 18px 60px rgba(2,6,23,0.10), 0 6px 18px rgba(2,6,23,0.06);
+        overflow:hidden; animation:pop .35s ease;
+      }
+      @keyframes pop { from { transform:translateY(10px); opacity:.0;} to { transform:none; opacity:1;} }
+
+      .head {
+        padding:18px; display:flex; align-items:center; gap:12px; border-bottom:1px solid #eef2ff; background:linear-gradient(180deg,#ffffff, #fbfdff);
+      }
+      .logo { width:42px; height:42px; border-radius:12px; background:conic-gradient(from 210deg, var(--primary), var(--accent)); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:900; }
+      .title h1 { margin:0; font-size:18px; line-height:1.1; }
+      .title p { margin:2px 0 0; color:var(--muted); font-size:12px; }
+
+      .body { padding:20px; }
+      label { display:block; font-size:13px; color:#334155; margin:8px 0 6px; font-weight:600; }
+      input {
+        width:100%; padding:14px 14px; border:1px solid #e5e7eb; border-radius:12px; font-size:16px; outline:none; background:#fbfdff;
+        transition: border-color .15s, box-shadow .15s, background .15s;
+      }
+      input:focus { border-color:#93c5fd; box-shadow:0 0 0 4px rgba(37,99,235,0.12); background:#fff; }
+      .btn {
+        width:100%; padding:12px; border:none; border-radius:12px; font-size:16px; font-weight:800; cursor:pointer;
+        background:linear-gradient(90deg, var(--primary), #4f46e5); color:#fff; box-shadow:0 10px 18px rgba(37,99,235,.18);
+      }
+      .btn.secondary { background:linear-gradient(90deg, var(--accent), #14b8a6); box-shadow:0 10px 18px rgba(16,185,129,.18); }
+      .muted { color:var(--muted); font-size:12px; text-align:center; margin-top:10px; }
+      .link { display:block; text-align:center; margin-top:12px; padding:12px; background:#f1f5f9; border-radius:12px; font-weight:800; color:#0f172a; text-decoration:none; }
+
+      /* OTP step */
+      .otp-wrap { margin-top:10px; display:flex; justify-content:center; gap:10px; }
+      .otp-wrap input {
+        width:48px; height:56px; text-align:center; font-size:22px; border-radius:12px; border:1px solid #e5e7eb; background:#fbfdff;
+        transition: transform .12s ease, box-shadow .15s ease, border-color .15s ease;
+      }
+      .otp-wrap input:focus { border-color:#93c5fd; box-shadow:0 0 0 4px rgba(37,99,235,0.12); transform:translateY(-2px); background:#fff; }
+      .msg { margin-top:10px; font-size:14px; display:none; }
+      .msg.err { color:#b91c1c; }
+      .msg.ok { color:#065f46; }
+
+      /* top pill tip */
+      .tip {
+        align-self:center; margin:12px auto 0; display:inline-flex; padding:6px 12px; border-radius:999px;
+        background:#ecfeff; color:#0e7490; font-size:12px; border:1px solid #cffafe;
+      }
+
+      /* recaptcha center */
+      #recaptcha-container { margin-top:12px; display:flex; justify-content:center; }
+
+      /* subtle footer */
+      .foot { padding:14px 20px; border-top:1px solid #eef2ff; background:#ffffff; display:flex; justify-content:center; }
     </style>
   </head>
   <body>
     <div class="wrap">
       <div class="card">
-        <div class="brand">
+        <div class="head">
           <div class="logo">स</div>
-          <div>
-            <strong>Samvaad</strong>
-            <div class="muted">Login with phone + OTP</div>
+          <div class="title">
+            <h1>Samvaad</h1>
+            <p>Login with phone + OTP</p>
           </div>
         </div>
 
-        <div id="step-phone">
-          <input id="phone" placeholder="Enter phone e.g. +91XXXXXXXXXX" />
-          <div id="recaptcha-container"></div>
-          <button id="sendBtn">Send OTP</button>
-          <div class="muted">Tip: Dev testing numbers work without SMS.</div>
-          <div class="row">
+        <div class="body">
+          <!-- STEP 1: PHONE -->
+          <div id="step-phone">
+            <label for="phone">Phone number</label>
+            <input id="phone" placeholder="e.g. +91XXXXXXXXXX" />
+            <div id="recaptcha-container"></div>
+            <div class="tip">Dev testing: +911234567890 • OTP 123456</div>
+            <button id="sendBtn" class="btn" style="margin-top:12px;">Send OTP</button>
+            <div id="msg" class="msg err"></div>
+            <div id="ok" class="msg ok"></div>
             <a class="link" href="./index.html">Use email login</a>
           </div>
-          <div id="msg" class="error"></div>
-          <div id="ok" class="ok"></div>
+
+          <!-- STEP 2: OTP -->
+          <div id="step-otp" style="display:none;">
+            <label>Enter OTP</label>
+            <div class="otp-wrap" id="otpBox">
+              <input maxlength="1" inputmode="numeric" />
+              <input maxlength="1" inputmode="numeric" />
+              <input maxlength="1" inputmode="numeric" />
+              <input maxlength="1" inputmode="numeric" />
+              <input maxlength="1" inputmode="numeric" />
+              <input maxlength="1" inputmode="numeric" />
+            </div>
+            <button id="verifyBtn" class="btn secondary" style="margin-top:14px;">Verify OTP</button>
+            <div id="msg2" class="msg err"></div>
+            <div id="ok2" class="msg ok"></div>
+          </div>
         </div>
 
-        <div id="step-otp" style="display:none;">
-          <div class="muted">OTP sent. Enter 6-digit code</div>
-          <div class="otp">
-            <input maxlength="1" />
-            <input maxlength="1" />
-            <input maxlength="1" />
-            <input maxlength="1" />
-            <input maxlength="1" />
-            <input maxlength="1" />
-          </div>
-          <button id="verifyBtn" class="secondary" style="margin-top:12px;">Verify OTP</button>
-          <div id="msg2" class="error"></div>
-          <div id="ok2" class="ok"></div>
+        <div class="foot">
+          <span class="muted" style="margin:0;">Secure by Firebase Authentication</span>
         </div>
       </div>
     </div>
@@ -84,6 +129,7 @@
       const auth = getAuth(app);
       const db = getFirestore(app);
 
+      // Elements
       const stepPhone = document.getElementById('step-phone');
       const stepOtp = document.getElementById('step-otp');
       const phoneInput = document.getElementById('phone');
@@ -94,15 +140,29 @@
       const msg2 = document.getElementById('msg2');
       const ok2 = document.getElementById('ok2');
       const recaptchaContainerId = 'recaptcha-container';
+      const otpBox = document.getElementById('otpBox');
       let confirmationResult = null;
 
-      function show(el, text, good=false){ el.style.display='block'; el.textContent=text; (good? (el.className='ok') : (el.className='error')); }
-      function hideAll(){ msg.style.display='none'; ok.style.display='none'; msg2.style.display='none'; ok2.style.display='none'; }
+      function show(el, text, good=false){ if(!el)return; el.style.display='block'; el.textContent=text; el.className = 'msg ' + (good?'ok':'err'); }
+      function hideMsgs(){ [msg,ok,msg2,ok2].forEach(x=> x && (x.style.display='none')); }
 
       function setupRecaptcha() {
         if (!window.recaptchaVerifier) {
           window.recaptchaVerifier = new RecaptchaVerifier(auth, recaptchaContainerId, { size:'normal' });
         }
+      }
+
+      function wireOtpAutoTab() {
+        const inputs = Array.from(otpBox.querySelectorAll('input'));
+        inputs[0].focus();
+        inputs.forEach((inp, idx) => {
+          inp.addEventListener('input', () => {
+            if (inp.value && idx < inputs.length - 1) inputs[idx+1].focus();
+          });
+          inp.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !inp.value && idx > 0) inputs[idx-1].focus();
+          });
+        });
       }
 
       async function upsertUserIndex(user) {
@@ -118,7 +178,7 @@
       }
 
       sendBtn.addEventListener('click', async () => {
-        hideAll();
+        hideMsgs();
         try {
           const phone = phoneInput.value.trim();
           if (!/^\+\d{10,15}$/.test(phone)) return show(msg, 'Use country code, e.g. +91XXXXXXXXXX');
@@ -126,6 +186,7 @@
           confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
           stepPhone.style.display = 'none';
           stepOtp.style.display = 'block';
+          wireOtpAutoTab();
           show(ok2, 'OTP sent. Check SMS (or use test code).', true);
         } catch (e) {
           show(msg, e.message || 'Failed to send OTP');
@@ -133,24 +194,21 @@
       });
 
       verifyBtn.addEventListener('click', async () => {
-        hideAll();
+        hideMsgs();
         try {
-          const digits = Array.from(stepOtp.querySelectorAll('.otp input')).map(i => i.value).join('');
-          if (digits.length !== 6) return show(msg2, 'Enter 6-digit OTP');
+          const digits = Array.from(otpBox.querySelectorAll('input')).map(i => i.value).join('');
+          if (digits.length !== 6) return show(msg2, 'Enter 6‑digit OTP');
           const result = await confirmationResult.confirm(digits);
           await upsertUserIndex(result.user);
           show(ok2, 'Login success! Redirecting…', true);
-          setTimeout(() => window.location.href = './dashboard.html', 400);
+          setTimeout(()=> window.location.href = './dashboard.html', 450);
         } catch (e) {
           show(msg2, e.message || 'Invalid code');
         }
       });
 
       onAuthStateChanged(auth, (user) => {
-        if (user) {
-          // already logged-in: go dashboard
-          window.location.href = './dashboard.html';
-        }
+        if (user) window.location.href = './dashboard.html';
       });
     </script>
   </body>
