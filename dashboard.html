@@ -26,6 +26,13 @@
               line: '#e7efee',
               brand: { 600: '#2563eb' },
               mint: { 50: '#e8f3f1', 500: '#50958a' },
+              chat: {
+                base: '#12211f',
+                panel: '#254640',
+                mint: '#20dfbf',
+                sub: '#95c6be',
+                line: '#2b4b45'
+              }
             },
             boxShadow: {
               card: '0 12px 30px rgba(2,6,23,.06)',
@@ -116,155 +123,176 @@
       <!-- Content -->
       <main class="flex-1">
         <div class="flex flex-wrap justify-between gap-3 p-4">
-          <p class="tracking-tight text-[28px] md:text-[32px] font-bold">Settings</p>
+          <p id="view-title" class="tracking-tight text-[28px] md:text-[32px] font-bold">Settings</p>
         </div>
 
-        <!-- Account -->
-        <section class="space-y-2">
-          <h3 class="px-4 pt-2 pb-1 text-lg font-bold">Account</h3>
-
-          <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
-            <div class="flex items-center gap-4">
-              <div class="h-14 w-14 rounded-full bg-cover bg-center"
-                   style="background-image:url('https://i.pravatar.cc/100?img=12')"></div>
+        <!-- VIEW: Chats (Dark) -->
+        <section id="view-chats" class="hidden bg-chat-base text-white min-h-[calc(100vh-64px)]">
+          <div class="px-4 md:px-40 py-4">
+            <div class="flex items-center justify-between">
               <div>
-                <p class="font-medium">Profile</p>
-                <p id="acc-name" class="text-mint-500 text-sm">Loading…</p>
+                <p id="peer-name" class="text-[28px] font-bold">Chat</p>
+                <p id="peer-status" class="text-chat-sub text-sm">Select a user to start</p>
               </div>
-            </div>
-            <div class="shrink-0 text-ink">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+              <div class="flex gap-2">
+                <button class="h-10 px-3 rounded-xl bg-chat-panel">
+                  <svg width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></svg>
+                </button>
+                <button class="h-10 px-3 rounded-xl bg-chat-panel">
+                  <svg width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32Zm0,16V152h-28.7A15.86,15.86,0,0,0,168,156.69L148.69,176H107.31L88,156.69A15.86,15.86,0,0,0,76.69,152H48V48Zm0,160H48V168H76.69L96,187.31A15.86,15.86,0,0,0,107.31,192h41.38A15.86,15.86,0,0,0,160,187.31L179.31,168H208v40Z"/></svg>
+                </button>
+              </div>
             </div>
           </div>
 
-          <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
-            <div class="flex items-center gap-4">
-              <div class="rounded-lg bg-mint-50 w-12 h-12 grid place-items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M222.37,158.46l-47.11-21.11-.13-.06a16,16,0,0,0-15.17,1.4,8.12,8.12,0,0,0-.75.56L134.87,160c-15.42-7.49-31.34-23.29-38.83-38.51l20.78-24.71c.2-.25.39-.5.57-.77a16,16,0,0,0,1.32-15.06l0-.12L97.54,33.64a16,16,0,0,0-16.62-9.52A56.26,56.26,0,0,0,32,80c0,79.4,64.6,144,144,144a56.26,56.26,0,0,0,55.88-48.92A16,16,0,0,0,222.37,158.46Z"/></svg>
-              </div>
-              <div>
-                <p class="font-medium">Phone</p>
-                <p id="acc-phone" class="text-mint-500 text-sm">—</p>
-              </div>
-            </div>
-            <div class="shrink-0 text-ink">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
-            </div>
-          </div>
+          <main id="timeline" class="px-4 md:px-40 pb-24 space-y-2">
+            <div id="chat-empty" class="text-sm text-chat-sub">Open a chat from Users or pass ?peer=UID in URL.</div>
+          </main>
 
-          <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
-            <div class="flex items-center gap-4">
-              <div class="rounded-lg bg-mint-50 w-12 h-12 grid place-items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M208,80H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80Z"/></svg>
-              </div>
-              <div>
-                <p class="font-medium">Privacy</p>
-                <p class="text-mint-500 text-sm">Last seen recently</p>
+          <footer class="fixed bottom-0 inset-x-0 bg-chat-base/95 backdrop-blur border-t border-chat-line">
+            <div class="px-4 md:px-40 py-3">
+              <div class="flex items-center gap-3 @container">
+                <div class="flex w-full items-stretch rounded-xl overflow-hidden">
+                  <input id="msg" placeholder="Type a message"
+                         class="flex-1 h-12 px-4 bg-chat-panel text-white placeholder:text-chat-sub border-none focus:ring-0"/>
+                  <div class="flex items-center gap-3 pr-3 bg-chat-panel">
+                    <button class="p-1.5 text-chat-sub" title="Emoji">
+                      <svg width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24ZM80,108a12,12,0,1,1,12,12A12,12,0,0,1,80,108Zm96,0a12,12,0,1,1-12-12A12,12,0,0,1,176,108Zm-1.07,48c-10.29,17.79-27.4,28-46.93,28s-36.63-10.2-46.92-28a8,8,0,1,1,13.84-8c7.47,12.91,19.21,20,33.08,20s25.61-7.1,33.07-20a8,8,0,0,1,13.86,8Z"/></svg>
+                    </button>
+                    <button class="p-1.5 text-chat-sub" title="Attach">
+                      <svg width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M209.66,122.34a8,8,0,0,1,0,11.32l-82.05,82a56,56,0,0,1-79.2-79.21L147.67,35.73a40,40,0,1,1,56.61,56.55L105,193A24,24,0,1,1,71,159L154.3,74.38A8,8,0,1,1,165.7,85.6L82.39,170.31a8,8,0,1,0,11.27,11.36L192.93,81A24,24,0,1,0,159,47L59.76,147.68a40,40,0,1,0,56.53,56.62l82.06-82A8,8,0,0,1,209.66,122.34Z"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <button id="send" class="h-10 px-5 rounded-xl bg-chat-mint text-[#12211f] font-semibold hidden @[480px]:block">Send</button>
               </div>
             </div>
-            <div class="shrink-0 text-ink">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
-            </div>
-          </div>
+          </footer>
         </section>
 
-        <!-- Notifications -->
-        <section class="mt-2 space-y-2">
-          <h3 class="px-4 pt-4 pb-2 text-lg font-bold">Notifications</h3>
-          <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
-            <div class="flex items-center gap-4">
-              <div class="rounded-lg bg-mint-50 w-12 h-12 grid place-items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06Z"/></svg>
-              </div>
-              <div>
-                <p class="font-medium">Notifications</p>
-                <p class="text-mint-500 text-sm">Message, group & call notifications</p>
-              </div>
-            </div>
-            <div class="shrink-0 text-ink">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
-            </div>
-          </div>
-        </section>
+        <!-- VIEW: Settings -->
+        <section id="view-settings" class="block">
+          <!-- Settings content (unchanged) -->
+          <section class="space-y-2">
+            <h3 class="px-4 pt-2 pb-1 text-lg font-bold">Account</h3>
 
-        <!-- Help -->
-        <section class="mt-2 space-y-2">
-          <h3 class="px-4 pt-4 pb-2 text-lg font-bold">Help</h3>
-
-          <div class="flex items-center gap-4 bg-bg px-4 min-h-14 justify-between rounded-xl border border-line card-reveal">
-            <div class="flex items-center gap-4">
-              <div class="rounded-lg bg-mint-50 w-10 h-10 grid place-items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M140,180a12,12,0,1,1-12-12A12,12,0,0,1,140,180Z"/></svg>
+            <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
+              <div class="flex items-center gap-4">
+                <div class="h-14 w-14 rounded-full bg-cover bg-center"
+                     style="background-image:url('https://i.pravatar.cc/100?img=12')"></div>
+                <div>
+                  <p class="font-medium">Profile</p>
+                  <p id="acc-name" class="text-mint-500 text-sm">Loading…</p>
+                </div>
               </div>
-              <p class="text-base">Help center</p>
-            </div>
-            <div class="shrink-0 text-ink">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-4 bg-bg px-4 min-h-14 justify-between rounded-xl border border-line card-reveal">
-            <div class="flex items-center gap-4">
-              <div class="rounded-lg bg-mint-50 w-10 h-10 grid place-items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M222.37,158.46l-47.11-21.11-.13-.06a16,16,0,0,0-15.17,1.4,8.12,8.12,0,0,0-.75.56L134.87,160c-15.42-7.49-31.34-23.29-38.83-38.51l20.78-24.71c.2-.25.39-.5.57-.77a16,16,0,0,0,1.32-15.06l0-.12L97.54,33.64a16,16,0,0,0-16.62-9.52A56.26,56.26,0,0,0,32,80c0,79.4,64.6,144,144,144a56.26,56.26,0,0,0,55.88-48.92A16,16,0,0,0,222.37,158.46Z"/></svg>
+              <div class="shrink-0 text-ink">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
               </div>
-              <p class="text-base">Contact us</p>
             </div>
-            <div class="shrink-0 text-ink">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
-            </div>
-          </div>
 
-          <div class="flex items-center gap-4 bg-bg px-4 min-h-14 justify-between rounded-xl border border-line card-reveal">
-            <div class="flex items-center gap-4">
-              <div class="rounded-lg bg-mint-50 w-10 h-10 grid place-items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34Z"/></svg>
+            <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
+              <div class="flex items-center gap-4">
+                <div class="rounded-lg bg-mint-50 w-12 h-12 grid place-items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M222.37,158.46l-47.11-21.11-.13-.06a16,16,0,0,0-15.17,1.4,8.12,8.12,0,0,0-.75.56L134.87,160c-15.42-7.49-31.34-23.29-38.83-38.51l20.78-24.71c.2-.25.39-.5.57-.77a16,16,0,0,0,1.32-15.06l0-.12L97.54,33.64a16,16,0,0,0-16.62-9.52A56.26,56.26,0,0,0,32,80c0,79.4,64.6,144,144,144a56.26,56.26,0,0,0,55.88-48.92A16,16,0,0,0,222.37,158.46Z"/></svg>
+                </div>
+                <div>
+                  <p class="font-medium">Phone</p>
+                  <p id="acc-phone" class="text-mint-500 text-sm">—</p>
+                </div>
               </div>
-              <p class="text-base">Terms and privacy policy</p>
+              <div class="shrink-0 text-ink">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+              </div>
             </div>
-            <div class="shrink-0 text-ink">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+
+            <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
+              <div class="flex items-center gap-4">
+                <div class="rounded-lg bg-mint-50 w-12 h-12 grid place-items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M208,80H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80Z"/></svg>
+                </div>
+                <div>
+                  <p class="font-medium">Privacy</p>
+                  <p class="text-mint-500 text-sm">Last seen recently</p>
+                </div>
+              </div>
+              <div class="shrink-0 text-ink">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+              </div>
             </div>
-          </div>
+          </section>
+
+          <section class="mt-2 space-y-2">
+            <h3 class="px-4 pt-4 pb-2 text-lg font-bold">Notifications</h3>
+            <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
+              <div class="flex items-center gap-4">
+                <div class="rounded-lg bg-mint-50 w-12 h-12 grid place-items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06Z"/></svg>
+                </div>
+                <div>
+                  <p class="font-medium">Notifications</p>
+                  <p class="text-mint-500 text-sm">Message, group & call notifications</p>
+                </div>
+              </div>
+              <div class="shrink-0 text-ink">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+              </div>
+            </div>
+          </section>
+
+          <section class="mt-2 space-y-2">
+            <h3 class="px-4 pt-4 pb-2 text-lg font-bold">Help</h3>
+
+            <div class="flex items-center gap-4 bg-bg px-4 min-h-14 justify-between rounded-xl border border-line card-reveal">
+              <div class="flex items-center gap-4">
+                <div class="rounded-lg bg-mint-50 w-10 h-10 grid place-items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M140,180a12,12,0,1,1-12-12A12,12,0,0,1,140,180Z"/></svg>
+                </div>
+                <p class="text-base">Help center</p>
+              </div>
+              <div class="shrink-0 text-ink">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-4 bg-bg px-4 min-h-14 justify-between rounded-xl border border-line card-reveal">
+              <div class="flex items-center gap-4">
+                <div class="rounded-lg bg-mint-50 w-10 h-10 grid place-items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M222.37,158.46l-47.11-21.11-.13-.06a16,16,0,0,0-15.17,1.4,8.12,8.12,0,0,0-.75.56L134.87,160c-15.42-7.49-31.34-23.29-38.83-38.51l20.78-24.71c.2-.25.39-.5.57-.77a16,16,0,0,0,1.32-15.06l0-.12L97.54,33.64a16,16,0,0,0-16.62-9.52A56.26,56.26,0,0,0,32,80c0,79.4,64.6,144,144,144a56.26,56.26,0,0,0,55.88-48.92A16,16,0,0,0,222.37,158.46Z"/></svg>
+                </div>
+                <p class="text-base">Contact us</p>
+              </div>
+              <div class="shrink-0 text-ink">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-4 bg-bg px-4 min-h-14 justify-between rounded-xl border border-line card-reveal">
+              <div class="flex items-center gap-4">
+                <div class="rounded-lg bg-mint-50 w-10 h-10 grid place-items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34Z"/></svg>
+                </div>
+                <p class="text-base">Terms and privacy policy</p>
+              </div>
+              <div class="shrink-0 text-ink">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+              </div>
+            </div>
+          </section>
+
+          <!-- Placeholders -->
+          <section id="view-communities" class="hidden">
+            <div class="bg-white border border-line rounded-xl shadow-card p-6">Communities coming soon.</div>
+          </section>
+          <section id="view-updates" class="hidden">
+            <div class="bg-white border border-line rounded-xl shadow-card p-6">Updates coming soon.</div>
+          </section>
+          <section id="view-calls" class="hidden">
+            <div class="bg-white border border-line rounded-xl shadow-card p-6">Calls coming soon.</div>
+          </section>
         </section>
       </main>
     </div>
 
-    <!-- Firebase binding: fill user name/phone + logout -->
+    <!-- Firebase binding + Chats glue -->
     <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-      import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-
-      const firebaseConfig = {
-        apiKey: "AIzaSyBIHeGBPieB4Q8hzYv-tmtRvxwHlY-8HiE",
-        authDomain: "samvaad-7970b.firebaseapp.com",
-        projectId: "samvaad-7970b",
-        storageBucket: "samvaad-7970b.firebasestorage.app",
-        messagingSenderId: "246840076262",
-        appId: "1:246840076262:web:9458559ec7afa340541827"
-      };
-
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
-
-      const nameEl = document.getElementById('user-name');
-      const phoneEl = document.getElementById('acc-phone');
-      const accName = document.getElementById('acc-name');
-      const uidPill = document.getElementById('uid-pill');
-
-      onAuthStateChanged(auth, (user)=>{
-        if(!user) return location.href='./';
-        const n = user.displayName || user.phoneNumber || user.email || 'User';
-        nameEl.textContent = n;
-        accName.textContent = n;
-        phoneEl.textContent = user.phoneNumber || '—';
-        uidPill.textContent = `UID: ${user.uid.slice(0,6)}…`;
-      });
-
-      document.getElementById('logout').onclick = async ()=>{
-        await signOut(auth);
-        location.href = './';
-      };
-    </script>
-  </body>
-</html>
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app
