@@ -21,7 +21,10 @@
       .head {
         padding:18px; display:flex; align-items:center; gap:12px; border-bottom:1px solid #eef2ff; background:linear-gradient(180deg,#ffffff, #fbfdff);
       }
-      .logo { width:42px; height:42px; border-radius:12px; background:conic-gradient(from 210deg, var(--primary), var(--accent)); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:900; }
+      .ph-mark{ width:42px; height:42px; border-radius:12px; object-fit:cover;
+        box-shadow:0 8px 24px rgba(16,185,129,.18),0 2px 8px rgba(37,99,235,.15); }
+      @media (max-width:450px){ .ph-mark{ width:36px; height:36px; } }
+
       .title h1 { margin:0; font-size:18px; line-height:1.1; }
       .title p { margin:2px 0 0; color:var(--muted); font-size:12px; }
 
@@ -40,7 +43,6 @@
       .muted { color:var(--muted); font-size:12px; text-align:center; margin-top:10px; }
       .link { display:block; text-align:center; margin-top:12px; padding:12px; background:#f1f5f9; border-radius:12px; font-weight:800; color:#0f172a; text-decoration:none; }
 
-      /* OTP step */
       .otp-wrap { margin-top:10px; display:flex; justify-content:center; gap:10px; }
       .otp-wrap input {
         width:48px; height:56px; text-align:center; font-size:22px; border-radius:12px; border:1px solid #e5e7eb; background:#fbfdff;
@@ -51,16 +53,12 @@
       .msg.err { color:#b91c1c; }
       .msg.ok { color:#065f46; }
 
-      /* top pill tip */
       .tip {
         align-self:center; margin:12px auto 0; display:inline-flex; padding:6px 12px; border-radius:999px;
         background:#ecfeff; color:#0e7490; font-size:12px; border:1px solid #cffafe;
       }
-
-      /* recaptcha center */
       #recaptcha-container { margin-top:12px; display:flex; justify-content:center; }
 
-      /* subtle footer */
       .foot { padding:14px 20px; border-top:1px solid #eef2ff; background:#ffffff; display:flex; justify-content:center; }
     </style>
   </head>
@@ -68,7 +66,8 @@
     <div class="wrap">
       <div class="card">
         <div class="head">
-          <div class="logo">स</div>
+          <!-- यहाँ अपना मार्क लगाओ: images/logo-mark.png -->
+          <img src="./images/logo-mark.png" alt="Samvaad" class="ph-mark">
           <div class="title">
             <h1>Samvaad</h1>
             <p>Login with phone + OTP</p>
@@ -129,7 +128,6 @@
       const auth = getAuth(app);
       const db = getFirestore(app);
 
-      // Elements
       const stepPhone = document.getElementById('step-phone');
       const stepOtp = document.getElementById('step-otp');
       const phoneInput = document.getElementById('phone');
