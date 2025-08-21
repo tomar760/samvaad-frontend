@@ -3,7 +3,6 @@
   --bg1:#e2e2e2; --bg2:#c9d6ff;
   --card:#ffffff; --text:#333; --muted:#94a3b8;
   --brand:#7494ec;
-  /* subtle brand accents to match phone.html */
   --brand-strong:#5f7df0;
   --shadow-1:0 0 30px rgba(0,0,0,0.2);
   --shadow-2:0 18px 60px rgba(2,6,23,0.10),0 6px 18px rgba(2,6,23,0.06);
@@ -107,8 +106,18 @@ p{ font-size:14.5px; margin:15px 0; }
   .container.active .toggle-panel.toggle-right{ bottom:0; }
   h1{ font-size:28px; }
 }
-
 @media (max-width:450px){
   .form-box{ padding:20px; }
   h1{ font-size:26px; }
+}
+
+/* Brand header on the login card */
+.brand-bar{
+  position:absolute; left:18px; top:14px; z-index:3;
+  display:flex; align-items:center; gap:10px;
+}
+.brand-logo{ height:28px; object-fit:contain; }
+@media (max-width:650px){
+  .brand-bar{ left:12px; top:10px; }
+  .brand-logo{ height:24px; }
 }
