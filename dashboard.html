@@ -4,164 +4,236 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Samvaad • Dashboard</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900"
+    />
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              bg: '#f8fbfb',
+              ink: '#0e1b18',
+              line: '#e7efee',
+              brand: { 600: '#2563eb' },
+              mint: { 50: '#e8f3f1', 500: '#50958a' },
+            },
+            boxShadow: {
+              card: '0 12px 30px rgba(2,6,23,.06)',
+              soft: '0 8px 20px rgba(2,6,23,.05)',
+            },
+            borderRadius: { xl2: '1rem' },
+          },
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans', 'system-ui', 'sans-serif'],
+          },
+        },
+      };
+    </script>
     <style>
-      :root{
-        --bg:#f7f9fc; --text:#0f172a; --muted:#64748b; --line:#e5e7eb;
-        --brand:#2563eb; --accent:#10b981; --card:#fff; --chip:#eef2ff;
-      }
-      *{box-sizing:border-box}
-      body{margin:0;background:var(--bg);color:var(--text);font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-
-      /* Animations */
-      @keyframes pop { from{transform:translateY(8px);opacity:.0} to{transform:none;opacity:1} }
-      @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-
-      /* Top bar */
-      .top{position:sticky;top:0;z-index:20;background:#ffffffcc;backdrop-filter:saturate(180%) blur(10px);
-        border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px}
-      .brand{display:flex;align-items:center;gap:10px}
-      .mark{width:36px;height:36px;border-radius:10px;object-fit:cover;box-shadow:0 6px 14px rgba(37,99,235,.18)}
-      .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#f1f5f9;font-size:12px}
-      .btn{padding:10px 12px;border:none;border-radius:12px;background:var(--brand);color:#fff;font-weight:800;cursor:pointer;transition:transform .08s}
-      .btn:active{transform:translateY(1px)}
-      .btn.ghost{background:#e8f3f1;color:#0f172a}
-
-      /* Shell */
-      .wrap{max-width:1100px;margin:14px auto;padding:0 12px}
-      .grid{display:grid;grid-template-columns:340px 1fr;gap:14px}
-      @media(max-width:940px){.grid{grid-template-columns:1fr}}
-
-      .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;
-        box-shadow:0 12px 30px rgba(2,6,23,.06);animation:pop .35s ease}
-      .list{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;animation:fadeIn .25s ease}
-      .item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #f1f5f9;transition:background .12s}
-      .item:hover{background:#fafcff}
-      .item:last-child{border-bottom:none}
-      .avatar{width:42px;height:42px;border-radius:50%;background:#eef2ff;display:grid;place-items:center;font-weight:800;color:#334155}
-      .name{font-weight:700}
-      .sub{font-size:12px;color:var(--muted)}
-      .row{display:flex;align-items:center;gap:8px}
-      .input{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fbfdff}
-      .msgbox{height:420px;border:1px solid var(--line);border-radius:14px;padding:10px;background:#fff;overflow:auto}
-      .bubble{max-width:72%;padding:10px 12px;border-radius:14px;margin:6px 0;line-height:1.35}
-      .me{background:#e8f3ff;margin-left:auto}
-      .them{background:#f1f5f9}
-      .empty{display:grid;place-items:center;padding:30px;border:1px dashed var(--line);border-radius:14px;background:#fff}
-      .empty .hint{font-size:13px;color:var(--muted)}
-
-      /* Panels + Tabs */
-      .panel{display:none}
-      .panel.active{display:block}
-      .tabs{position:sticky;bottom:0;z-index:15;background:#fff;border-top:1px solid var(--line);display:flex}
-      .tab{flex:1;padding:10px 6px;text-align:center;cursor:pointer;font-weight:700;color:#334155}
-      .tab.active{color:#0f172a;border-top:3px solid var(--brand);background:#fff}
-
-      /* Section headers */
-      .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-      .title{font-weight:800}
-      .chip{padding:6px 10px;border-radius:999px;background:var(--chip);font-size:12px}
+      .tap { transition: transform .06s ease; }
+      .tap:active { transform: translateY(1px); }
+      .card-reveal { animation: reveal .25s ease both; }
+      @keyframes reveal { from { opacity:0; transform: translateY(8px) } to { opacity:1; transform:none } }
     </style>
   </head>
-  <body>
-    <!-- Top bar -->
-    <div class="top">
-      <div class="brand">
-        <img src="./images/logo-mark.png" class="mark" alt="Samvaad">
-        <strong>Samvaad</strong>
+  <body class="bg-bg text-ink font-sans min-h-screen overflow-x-hidden">
+    <!-- Top App Bar -->
+    <header class="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-line">
+      <div class="max-w-[1200px] mx-auto px-4 py-3 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <img src="./images/logo-mark.png" alt="Samvaad" class="w-9 h-9 rounded-xl shadow-soft object-cover" />
+          <strong class="text-lg">Samvaad</strong>
+          <span id="uid-pill" class="hidden sm:inline ml-2 text-xs bg-gray-100 rounded-full px-3 py-1">Loading…</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="hidden md:flex items-center gap-2 bg-white border border-line rounded-xl px-3 py-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" class="text-gray-500"><path fill="currentColor" d="m20.94 20.94l-4.36-4.36A8.5 8.5 0 1 0 18.5 17l4.36 4.36zM10.5 17a6.5 6.5 0 1 1 6.5-6.5A6.51 6.51 0 0 1 10.5 17"/></svg>
+            <input id="search" class="border-none focus:ring-0 text-sm w-56" placeholder="Search settings" />
+          </div>
+          <button id="logout" class="tap bg-brand-600 text-white font-bold px-3 py-2 rounded-xl">Logout</button>
+        </div>
       </div>
-      <div class="row">
-        <span id="user-pill" class="pill">Loading…</span>
-        <button id="logout" class="btn">Logout</button>
-      </div>
-    </div>
+    </header>
 
-    <div class="wrap">
-      <!-- Chats panel -->
-      <div id="panel-chats" class="panel active">
-        <div class="grid">
-          <!-- Left: chats list -->
-          <div>
-            <div class="section-head">
-              <div class="row">
-                <span class="title">Chats</span>
-                <span id="chat-count" class="chip">0</span>
+    <!-- Main Layout -->
+    <div class="max-w-[1200px] mx-auto px-4 py-4 grid grid-cols-1 md:grid-cols-[320px_1fr] gap-4">
+      <!-- Left Rail -->
+      <aside class="bg-bg rounded-xl2 p-4 min-h-[620px] flex flex-col justify-between">
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-cover bg-center"
+                 style="background-image:url('https://i.pravatar.cc/100?img=12')"></div>
+            <h1 id="user-name" class="text-base font-medium">Guest</h1>
+          </div>
+
+          <nav class="flex flex-col gap-1">
+            <button class="tap flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-white border border-transparent hover:border-line" data-nav="chats">
+              <span class="text-ink">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 256 256"><path d="M216,80H184V48a16,16,0,0,0-16-16H40A16,16,0,0,0,24,48V176a8,8,0,0,0,13,6.22L72,154V184a16,16,0,0,0,16,16h93.59L219,230.22a8,8,0,0,0,5,1.78,8,8,0,0,0,8-8V96A16,16,0,0,0,216,80Z"/></svg>
+              </span>
+              <span class="text-sm font-medium">Chats</span>
+            </button>
+            <button class="tap flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-white border border-transparent hover:border-line" data-nav="communities">
+              <span class="text-ink">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 256 256"><path d="M244.8,150.4a8,8,0,0,1-11.2-1.6A51.6,51.6,0,0,0,192,128a8,8,0,0,1-7.37-4.89,8,8,0,0,1,0-6.22A8,8,0,0,1,192,112a24,24,0,1,0-23.24-30,8,8,0,1,1-15.5-4A40,40,0,1,1,219,117.51a67.94,67.94,0,0,1,27.43,21.68A8,8,0,0,1,244.8,150.4Z"/></svg>
+              </span>
+              <span class="text-sm font-medium">Communities</span>
+            </button>
+            <button class="tap flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-white border border-transparent hover:border-line" data-nav="updates">
+              <span class="text-ink">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 256 256"><path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92Z"/></svg>
+              </span>
+              <span class="text-sm font-medium">Updates</span>
+            </button>
+            <button class="tap flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-white border border-transparent hover:border-line" data-nav="calls">
+              <span class="text-ink">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 256 256"><path d="M222.37,158.46l-47.11-21.11-.13-.06a16,16,0,0,0-15.17,1.4,8.12,8.12,0,0,0-.75.56L134.87,160c-15.42-7.49-31.34-23.29-38.83-38.51l20.78-24.71c.2-.25.39-.5.57-.77a16,16,0,0,0,1.32-15.06l0-.12L97.54,33.64a16,16,0,0,0-16.62-9.52A56.26,56.26,0,0,0,32,80c0,79.4,64.6,144,144,144a56.26,56.26,0,0,0,55.88-48.92A16,16,0,0,0,222.37,158.46Z"/></svg>
+              </span>
+              <span class="text-sm font-medium">Calls</span>
+            </button>
+            <button class="tap flex items-center gap-3 px-3 py-2 rounded-xl bg-mint-50 border border-line" data-nav="settings">
+              <span class="text-ink">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 256 256"><path d="M216,130.16q.06-2.16,0-4.32l14.92-18.64a8,8,0,0,0,1.48-7.06,107.6,107.6,0,0,0-10.88-26.25,8,8,0,0,0-6-3.93l-23.72-2.64q-1.48-1.56-3-3L186,40.54a8,8,0,0,0-3.94-6,107.29,107.29,0,0,0-26.25-10.86,8,8,0,0,0-7.06,1.48L130.16,40Q128,40,125.84,40L107.2,25.11a8,8,0,0,0-7.06-1.48A107.6,107.6,0,0,0,73.89,34.51a8,8,0,0,0-3.93,6L67.32,64.27q-1.56,1.49-3,3L40.54,70a8,8,0,0,0-6,3.94,107.71,107.71,0,0,0-10.87,26.25,8,8,0,0,0,1.49,7.06L40,125.84Q40,128,40,130.16L25.11,148.8a8,8,0,0,0-1.48,7.06,107.6,107.6,0,0,0,10.88,26.25,8,8,0,0,0,6,3.93l23.72,2.64q1.49,1.56,3,3L70,215.46a8,8,0,0,0,3.94,6,107.71,107.71,0,0,0,26.25,10.87,8,8,0,0,0,7.06-1.49L125.84,216q2.16.06,4.32,0l18.64,14.92a8,8,0,0,0,7.06,1.48,107.21,107.21,0,0,0,26.25-10.88,8,8,0,0,0,3.93-6l2.64-23.72q1.56-1.48,3-3L215.46,186a8,8,0,0,0,6-3.94,107.71,107.71,0,0,0,10.87-26.25,8,8,0,0,0-1.49-7.06ZM128,168a40,40,0,1,1,40-40A40,40,0,0,1,128,168Z"/></svg>
+              </span>
+              <span class="text-sm font-medium">Settings</span>
+            </button>
+          </nav>
+        </div>
+
+        <div class="hidden md:block text-xs text-gray-500 px-1">App version 0.2.0</div>
+      </aside>
+
+      <!-- Content -->
+      <main class="flex-1">
+        <div class="flex flex-wrap justify-between gap-3 p-4">
+          <p class="tracking-tight text-[28px] md:text-[32px] font-bold">Settings</p>
+        </div>
+
+        <!-- Account -->
+        <section class="space-y-2">
+          <h3 class="px-4 pt-2 pb-1 text-lg font-bold">Account</h3>
+
+          <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
+            <div class="flex items-center gap-4">
+              <div class="h-14 w-14 rounded-full bg-cover bg-center"
+                   style="background-image:url('https://i.pravatar.cc/100?img=12')"></div>
+              <div>
+                <p class="font-medium">Profile</p>
+                <p id="acc-name" class="text-mint-500 text-sm">Loading…</p>
               </div>
-              <button id="new-chat" class="btn ghost">New chat</button>
             </div>
-            <div id="chat-list" class="list"></div>
-            <div id="chats-empty" class="empty" style="display:none;margin-top:10px;">
-              <div class="hint">No chats yet. Start a conversation from Users tab or wait for someone to message you.</div>
+            <div class="shrink-0 text-ink">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
             </div>
           </div>
 
-          <!-- Right: conversation -->
-          <div class="card">
-            <div class="section-head">
-              <div class="row">
-                <div id="conv-avatar" class="avatar">S</div>
-                <div>
-                  <div id="conv-name" class="name">Select a chat</div>
-                  <div id="conv-sub" class="sub">No conversation yet</div>
-                </div>
+          <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
+            <div class="flex items-center gap-4">
+              <div class="rounded-lg bg-mint-50 w-12 h-12 grid place-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M222.37,158.46l-47.11-21.11-.13-.06a16,16,0,0,0-15.17,1.4,8.12,8.12,0,0,0-.75.56L134.87,160c-15.42-7.49-31.34-23.29-38.83-38.51l20.78-24.71c.2-.25.39-.5.57-.77a16,16,0,0,0,1.32-15.06l0-.12L97.54,33.64a16,16,0,0,0-16.62-9.52A56.26,56.26,0,0,0,32,80c0,79.4,64.6,144,144,144a56.26,56.26,0,0,0,55.88-48.92A16,16,0,0,0,222.37,158.46Z"/></svg>
               </div>
-              <div class="row"><button id="clear-chat" class="btn ghost">Clear</button></div>
+              <div>
+                <p class="font-medium">Phone</p>
+                <p id="acc-phone" class="text-mint-500 text-sm">—</p>
+              </div>
             </div>
-            <div id="msgbox" class="msgbox"><div class="sub">Choose a chat from left.</div></div>
-            <div class="row" style="margin-top:10px;">
-              <input id="msg" class="input" placeholder="Write a message…" />
-              <button id="send" class="btn">Send</button>
+            <div class="shrink-0 text-ink">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- Status -->
-      <div id="panel-status" class="panel">
-        <div class="card">
-          <div class="section-head"><span class="title">Status</span></div>
-          <div class="row" style="margin-top:6px;">
-            <input id="status-text" class="input" placeholder="What’s on your mind?" />
-            <button id="post-status" class="btn">Post</button>
+          <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
+            <div class="flex items-center gap-4">
+              <div class="rounded-lg bg-mint-50 w-12 h-12 grid place-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M208,80H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80Z"/></svg>
+              </div>
+              <div>
+                <p class="font-medium">Privacy</p>
+                <p class="text-mint-500 text-sm">Last seen recently</p>
+              </div>
+            </div>
+            <div class="shrink-0 text-ink">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+            </div>
           </div>
-          <div class="sub" style="margin-top:8px;">Media status next step.</div>
-        </div>
-      </div>
+        </section>
 
-      <!-- Users -->
-      <div id="panel-users" class="panel">
-        <div class="section-head">
-          <div class="row">
-            <span class="title">Users</span>
-            <span id="user-count" class="chip">0</span>
+        <!-- Notifications -->
+        <section class="mt-2 space-y-2">
+          <h3 class="px-4 pt-4 pb-2 text-lg font-bold">Notifications</h3>
+          <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
+            <div class="flex items-center gap-4">
+              <div class="rounded-lg bg-mint-50 w-12 h-12 grid place-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06Z"/></svg>
+              </div>
+              <div>
+                <p class="font-medium">Notifications</p>
+                <p class="text-mint-500 text-sm">Message, group & call notifications</p>
+              </div>
+            </div>
+            <div class="shrink-0 text-ink">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+            </div>
           </div>
-          <div class="row">
-            <button id="pick-contacts" class="btn ghost">Pick contacts</button>
+        </section>
+
+        <!-- Help -->
+        <section class="mt-2 space-y-2">
+          <h3 class="px-4 pt-4 pb-2 text-lg font-bold">Help</h3>
+
+          <div class="flex items-center gap-4 bg-bg px-4 min-h-14 justify-between rounded-xl border border-line card-reveal">
+            <div class="flex items-center gap-4">
+              <div class="rounded-lg bg-mint-50 w-10 h-10 grid place-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M140,180a12,12,0,1,1-12-12A12,12,0,0,1,140,180Z"/></svg>
+              </div>
+              <p class="text-base">Help center</p>
+            </div>
+            <div class="shrink-0 text-ink">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+            </div>
           </div>
-        </div>
-        <div id="users-list" class="list"></div>
-        <div id="users-empty" class="empty" style="display:none;margin-top:10px;">
-          <div class="hint">No users found yet.</div>
-        </div>
-      </div>
+
+          <div class="flex items-center gap-4 bg-bg px-4 min-h-14 justify-between rounded-xl border border-line card-reveal">
+            <div class="flex items-center gap-4">
+              <div class="rounded-lg bg-mint-50 w-10 h-10 grid place-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M222.37,158.46l-47.11-21.11-.13-.06a16,16,0,0,0-15.17,1.4,8.12,8.12,0,0,0-.75.56L134.87,160c-15.42-7.49-31.34-23.29-38.83-38.51l20.78-24.71c.2-.25.39-.5.57-.77a16,16,0,0,0,1.32-15.06l0-.12L97.54,33.64a16,16,0,0,0-16.62-9.52A56.26,56.26,0,0,0,32,80c0,79.4,64.6,144,144,144a56.26,56.26,0,0,0,55.88-48.92A16,16,0,0,0,222.37,158.46Z"/></svg>
+              </div>
+              <p class="text-base">Contact us</p>
+            </div>
+            <div class="shrink-0 text-ink">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 bg-bg px-4 min-h-14 justify-between rounded-xl border border-line card-reveal">
+            <div class="flex items-center gap-4">
+              <div class="rounded-lg bg-mint-50 w-10 h-10 grid place-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34Z"/></svg>
+              </div>
+              <p class="text-base">Terms and privacy policy</p>
+            </div>
+            <div class="shrink-0 text-ink">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
 
-    <!-- Bottom tabs -->
-    <div class="tabs">
-      <div id="tab-chats" class="tab active">Chats</div>
-      <div id="tab-status" class="tab">Status</div>
-      <div id="tab-users" class="tab">Users</div>
-    </div>
-
+    <!-- Firebase binding: fill user name/phone + logout -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
       import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-      import {
-        getFirestore, doc, setDoc, getDoc,
-        collection, addDoc, serverTimestamp,
-        query, where, getDocs, orderBy, onSnapshot, limit
-      } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyBIHeGBPieB4Q8hzYv-tmtRvxwHlY-8HiE",
@@ -174,248 +246,25 @@
 
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
-      const db = getFirestore(app);
 
-      // Tabs
-      const mapTabs = [
-        {t:'tab-chats', p:'panel-chats'},
-        {t:'tab-status', p:'panel-status'},
-        {t:'tab-users',  p:'panel-users' }
-      ];
-      mapTabs.forEach(({t,p})=>{
-        document.getElementById(t).onclick = ()=>{
-          mapTabs.forEach(({t,p})=>{
-            document.getElementById(t).classList.remove('active');
-            document.getElementById(p).classList.remove('active');
-          });
-          document.getElementById(t).classList.add('active');
-          document.getElementById(p).classList.add('active');
-        };
+      const nameEl = document.getElementById('user-name');
+      const phoneEl = document.getElementById('acc-phone');
+      const accName = document.getElementById('acc-name');
+      const uidPill = document.getElementById('uid-pill');
+
+      onAuthStateChanged(auth, (user)=>{
+        if(!user) return location.href='./';
+        const n = user.displayName || user.phoneNumber || user.email || 'User';
+        nameEl.textContent = n;
+        accName.textContent = n;
+        phoneEl.textContent = user.phoneNumber || '—';
+        uidPill.textContent = `UID: ${user.uid.slice(0,6)}…`;
       });
 
-      const pill  = document.getElementById('user-pill');
-      const logoutBtn = document.getElementById('logout');
-      logoutBtn.onclick = async ()=>{ await signOut(auth); location.href = "./"; };
-
-      const chatListEl = document.getElementById('chat-list');
-      const chatCountEl = document.getElementById('chat-count');
-      const chatsEmpty  = document.getElementById('chats-empty');
-
-      const usersList = document.getElementById('users-list');
-      const userCountEl = document.getElementById('user-count');
-      const usersEmpty  = document.getElementById('users-empty');
-
-      const msgbox   = document.getElementById('msgbox');
-      const msgInput = document.getElementById('msg');
-      const sendBtn  = document.getElementById('send');
-      const clearBtn = document.getElementById('clear-chat');
-
-      let me=null, currentPeer=null, unsubMessages=null;
-
-      onAuthStateChanged(auth, async (user)=>{
-        if(!user) return location.href="./";
-        me = user;
-        const name = user.displayName || user.phoneNumber || user.email || "User";
-        pill.textContent = (name.length>18? name.slice(0,18)+'…':name);
-
-        await upsertUser(user);
-        await loadMyChats();            // अगर कोई message history नहीं है → list empty + empty state दिखेगा
-        await loadUsers();              // Samvaad users
-      });
-
-      async function upsertUser(user){
-        await setDoc(doc(db,"users",user.uid),{
-          uid:user.uid,
-          displayName:user.displayName || null,
-          email:user.email || null,
-          phone:user.phoneNumber || null,
-          photoURL:user.photoURL || null,
-          updatedAt: Date.now()
-        },{merge:true});
-      }
-
-      // Helpers
-      function initials(n){ if(!n) return 'U'; const p=(n+'').split(/\s+/).slice(0,2); return p.map(s=>s[0]?.toUpperCase()).join('') || 'U'; }
-      function setEmpty(el, show){ el.style.display = show? 'grid':'none'; }
-
-      // CHATS: only threads that have at least one message
-      async function loadMyChats(){
-        chatListEl.innerHTML = '';
-        chatCountEl.textContent = '0';
-        setEmpty(chatsEmpty, false);
-
-        // Grab last 50 messages where I am sender or receiver, build peer set
-        const qFrom = query(collection(db,"messages"), where("from","==", me.uid), orderBy("ts","desc"), limit(50));
-        const qTo   = query(collection(db,"messages"), where("to","==", me.uid),   orderBy("ts","desc"), limit(50));
-        const seen = new Map();
-        const snaps = await Promise.all([getDocs(qFrom).catch(()=>({})), getDocs(qTo).catch(()=>({}))]);
-        snaps.forEach(s=>{
-          s?.forEach(d=>{
-            const m=d.data(); const peer = (m.from===me.uid? m.to : m.from);
-            if(!seen.has(peer)) seen.set(peer, m.ts?.toMillis?.() || 0);
-          });
-        });
-
-        if(seen.size===0){
-          setEmpty(chatsEmpty, true);
-          return;
-        }
-
-        const peers = [...seen.entries()].sort((a,b)=>b[1]-a[1]).map(x=>x);
-        chatCountEl.textContent = String(peers.length);
-
-        for(const uid of peers){
-          const u = await getDoc(doc(db,"users",uid));
-          const user = u.exists()? u.data(): {displayName:'User', uid};
-          chatListEl.appendChild(chatItem(user));
-        }
-      }
-
-      function chatItem(user){
-        const div = document.createElement('div');
-        div.className='item';
-        div.innerHTML = `
-          <div class="avatar">${initials(user.displayName || user.phone || user.email)}</div>
-          <div style="min-width:0;flex:1;">
-            <div class="name">${user.displayName || user.phone || user.email || 'User'}</div>
-            <div class="sub">${user.phone || user.email || ''}</div>
-          </div>
-          <div class="row">
-            <button class="btn ghost" data-open="${user.uid}">Open</button>
-          </div>
-        `;
-        div.querySelector('[data-open]').onclick = ()=> openConversation(user);
-        return div;
-      }
-
-      async function openConversation(peerUser){
-        currentPeer = peerUser;
-        document.getElementById('conv-name').textContent = peerUser.displayName || peerUser.phone || peerUser.email || 'User';
-        document.getElementById('conv-sub').textContent  = 'Chatting securely';
-        document.getElementById('conv-avatar').textContent = initials(peerUser.displayName || peerUser.phone || peerUser.email);
-        msgbox.innerHTML='<div class="sub">Loading…</div>';
-
-        if(unsubMessages) unsubMessages();
-
-        // Phase‑1: stream all ordered, filter pair (simple; works for MVP)
-        const qAll = query(collection(db,"messages"), orderBy("ts","asc"));
-        unsubMessages = onSnapshot(qAll, (snap)=>{
-          msgbox.innerHTML='';
-          snap.forEach(d=>{
-            const m=d.data();
-            if((m.from===me.uid && m.to===peerUser.uid) || (m.from===peerUser.uid && m.to===me.uid)){
-              const b=document.createElement('div');
-              b.className = 'bubble ' + (m.from===me.uid? 'me':'them');
-              b.textContent = m.text;
-              msgbox.appendChild(b);
-            }
-          });
-          msgbox.scrollTop = msgbox.scrollHeight;
-        });
-      }
-
-      sendBtn.onclick = async ()=>{
-        if(!currentPeer) return alert('Select a chat first');
-        const text = msgInput.value.trim();
-        if(!text) return;
-        await addDoc(collection(db,"messages"),{ from:me.uid, to:currentPeer.uid, text, ts:serverTimestamp() });
-        msgInput.value='';
+      document.getElementById('logout').onclick = async ()=>{
+        await signOut(auth);
+        location.href = './';
       };
-      clearBtn.onclick = ()=>{ msgbox.innerHTML=''; };
-
-      // USERS
-      async function loadUsers(){
-        usersList.innerHTML=''; setEmpty(usersEmpty, false); userCountEl.textContent='0';
-        const snap = await getDocs(query(collection(db,"users")));
-        const all=[]; snap.forEach(d=>{ const u=d.data(); if(u.uid!==me.uid) all.push(u); });
-        if(all.length===0){ setEmpty(usersEmpty,true); return; }
-        userCountEl.textContent = String(all.length);
-        all.forEach(u=> usersList.appendChild(userRow(u,true)));
-      }
-
-      function userRow(u,isUser){
-        const row=document.createElement('div');
-        row.className='item';
-        const title = u.displayName || u.phone || u.email || 'User';
-        row.innerHTML=`
-          <div class="avatar">${initials(title)}</div>
-          <div style="min-width:0;flex:1;">
-            <div class="name">${title}</div>
-            <div class="sub">${u.phone || u.email || ''}</div>
-          </div>
-          <div class="row">
-            ${isUser? `<button class="btn ghost" data-chat="${u.uid}">Message</button>`
-                     : `<button class="btn" data-invite="${u.contact||''}">Invite</button>`}
-          </div>`;
-        if(isUser){
-          row.querySelector('[data-chat]').onclick = async ()=>{
-            let peer=u;
-            if(!peer.uid){ const dd=await getDoc(doc(db,"users",u.uid)); if(dd.exists()) peer=dd.data(); }
-            openConversation(peer);
-          };
-        }else{
-          row.querySelector('[data-invite]').onclick = ()=>{
-            const shareText = `Join me on Samvaad! ${location.origin}${location.pathname.replace(/dashboard\.html$/,'')}`;
-            if(navigator.share){ navigator.share({title:"Samvaad invite",text:shareText}).catch(()=>{}); }
-            else alert('Copy & share:\n'+shareText);
-          };
-        }
-        return row;
-      }
-
-      // Contacts → match users / invite others
-      document.getElementById('pick-contacts').onclick = async ()=>{
-        if (!('contacts' in navigator) || !('select' in navigator.contacts)) {
-          alert('Contacts Picker not supported here.');
-          return;
-        }
-        const list = await navigator.contacts.select(['name','tel','email'], {multiple:true});
-        if(!list || list.length===0) return;
-
-        const phones=[]; const emails=[];
-        const rows = list.map(c=>{
-          const name = Array.isArray(c.name)? c.name[0] : c.name;
-          const tel  = Array.isArray(c.tel)?  c.tel  : c.tel;
-          const email= Array.isArray(c.email)?c.email: c.email;
-          const phone = normPhone(tel||'');
-          if(phone) phones.push(phone);
-          if(email) emails.push(String(email).toLowerCase());
-          return { name:name || phone || email || 'Unknown', phone, email: email? String(email).toLowerCase():null };
-        });
-
-        const foundByPhone = phones.length? await findUsersBy('phone', phones) : new Map();
-        const foundByEmail = emails.length? await findUsersBy('email', emails) : new Map();
-
-        usersList.innerHTML=''; let had=false;
-        rows.forEach(r=>{
-          let m=null;
-          if(r.phone && foundByPhone.has(r.phone)) m=foundByPhone.get(r.phone);
-          else if(r.email && foundByEmail.has(r.email)) m=foundByEmail.get(r.email);
-          if(m){ usersList.appendChild(userRow(m,true)); had=true; }
-        });
-        rows.forEach(r=>{
-          let m=null;
-          if(r.phone && foundByPhone.has(r.phone)) m=foundByPhone.get(r.phone);
-          else if(r.email && foundByEmail.has(r.email)) m=foundByEmail.get(r.email);
-          if(!m){ usersList.appendChild(userRow({displayName:r.name, phone:r.phone, email:r.email, contact:r.phone||r.email},false)); had=true; }
-        });
-        if(!had) setEmpty(usersEmpty,true);
-      };
-
-      function normPhone(s){
-        if(!s) return null; let x=s.replace(/[^\d+]/g,''); if(x.startsWith('00')) x='+'+x.slice(2);
-        if(!x.startsWith('+')) return null; if(x.length<10 || x.length>16) return null; return x;
-      }
-      async function findUsersBy(field, values){
-        const chunks=[]; for(let i=0;i<values.length;i+=10) chunks.push(values.slice(i,i+10));
-        const map=new Map();
-        for(const batch of chunks){
-          const qRef = query(collection(db,'users'), where(field,'in', batch));
-          const snap = await getDocs(qRef);
-          snap.forEach(d=>{ const u=d.data(); if(u[field]) map.set(u[field], u); });
-        }
-        return map;
-      }
     </script>
   </body>
 </html>
