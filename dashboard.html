@@ -1,52 +1,144 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Samvaad • Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
     <style>
-      :root { --primary:#2563eb; --accent:#10b981; }
-      *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f7f9fc;color:#0f172a}
-      .top{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0}
+      :root{
+        --bg:#f7f9fc; --text:#0f172a; --muted:#64748b; --line:#e5e7eb;
+        --brand:#2563eb; --accent:#10b981; --card:#fff;
+      }
+      *{box-sizing:border-box}
+      body{margin:0;background:var(--bg);color:var(--text);font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+
+      /* Top bar */
+      .top{position:sticky;top:0;z-index:20;background:#ffffffcc;backdrop-filter:saturate(180%) blur(10px);
+        border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px}
       .brand{display:flex;align-items:center;gap:10px}
-      .logo{width:36px;height:36px;border-radius:10px;background:conic-gradient(from 210deg,#2563eb,#10b981);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
-      .wrap{max-width:1000px;margin:20px auto;padding:0 16px}
-      .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;box-shadow:0 6px 20px rgba(2,6,23,0.06)}
-      .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-      @media(max-width:800px){.row{grid-template-columns:1fr}}
-      button{padding:10px 14px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-weight:700;cursor:pointer}
-      .muted{color:#64748b}
-      .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#f1f5f9;color:#0f172a;font-size:12px;margin-right:6px}
+      .mark{width:36px;height:36px;border-radius:10px;object-fit:cover}
+      .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#f1f5f9;font-size:12px}
+      .btn{padding:10px 12px;border:none;border-radius:12px;background:var(--brand);color:#fff;font-weight:800;cursor:pointer}
+      .btn.ghost{background:#e8f3f1;color:#0f172a}
+
+      /* Shell */
+      .wrap{max-width:1100px;margin:14px auto;padding:0 12px}
+      .grid{display:grid;grid-template-columns:320px 1fr;gap:14px}
+      @media(max-width:900px){.grid{grid-template-columns:1fr}}
+
+      .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;
+        box-shadow:0 8px 24px rgba(2,6,23,.06)}
+      .list{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+      .item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #f1f5f9}
+      .item:last-child{border-bottom:none}
+      .avatar{width:40px;height:40px;border-radius:50%;background:#eef2ff;display:grid;place-items:center;font-weight:800;color:#334155}
+      .name{font-weight:700}
+      .sub{font-size:12px;color:var(--muted)}
+      .row{display:flex;align-items:center;gap:8px}
+      .input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px}
+      .msgbox{height:360px;border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff;overflow:auto}
+      .bubble{max-width:70%;padding:8px 10px;border-radius:12px;margin:6px 0}
+      .me{background:#e8f3ff;margin-left:auto}
+      .them{background:#f1f5f9}
+
+      /* Panels + Tabs */
+      .panel{display:none}
+      .panel.active{display:block}
+      .tabs{position:sticky;bottom:0;z-index:15;background:#fff;border-top:1px solid var(--line);display:flex}
+      .tab{flex:1;padding:10px 6px;text-align:center;cursor:pointer;font-weight:700;color:#334155}
+      .tab.active{color:#0f172a;border-top:3px solid var(--brand);background:#fff}
     </style>
   </head>
   <body>
+    <!-- Top bar -->
     <div class="top">
       <div class="brand">
-        <div class="logo">स</div>
+        <!-- images/logo-mark.png (square icon) -->
+        <img src="./images/logo-mark.png" class="mark" alt="Samvaad">
         <strong>Samvaad</strong>
       </div>
-      <div>
+      <div class="row">
         <span id="user-pill" class="pill">Loading…</span>
-        <button id="logout">Logout</button>
+        <button id="logout" class="btn">Logout</button>
       </div>
     </div>
 
     <div class="wrap">
-      <div class="row">
-        <div class="card">
-          <h3>Welcome</h3>
-          <p class="muted" id="hello">Fetching user…</p>
-        </div>
-        <div class="card">
-          <h3>Next steps</h3>
-          <p class="muted">- Chats, Status, Online Users tabs add karenge (Stitch UI se)</p>
+      <!-- Tabs content -->
+      <div id="panel-chats" class="panel active">
+        <div class="grid">
+          <!-- Left: chats list -->
+          <div>
+            <div class="row" style="justify-content:space-between;margin-bottom:8px;">
+              <strong>Chats</strong>
+              <button id="new-chat" class="btn ghost">New chat</button>
+            </div>
+            <div id="chat-list" class="list">
+              <!-- filled by JS -->
+            </div>
+          </div>
+          <!-- Right: conversation -->
+          <div class="card">
+            <div class="row" style="justify-content:space-between;margin-bottom:6px;">
+              <div class="row">
+                <div id="conv-avatar" class="avatar">S</div>
+                <div>
+                  <div id="conv-name" class="name">Select a chat</div>
+                  <div id="conv-sub" class="sub">No conversation yet</div>
+                </div>
+              </div>
+              <div class="row"><button id="clear-chat" class="btn ghost">Clear</button></div>
+            </div>
+            <div id="msgbox" class="msgbox"><div class="sub">Choose a chat from left or start a new one.</div></div>
+            <div class="row" style="margin-top:8px;">
+              <input id="msg" class="input" placeholder="Write a message…" />
+              <button id="send" class="btn">Send</button>
+            </div>
+          </div>
         </div>
       </div>
+
+      <!-- Status -->
+      <div id="panel-status" class="panel">
+        <div class="card">
+          <strong>Status</strong>
+          <div class="row" style="margin-top:6px;">
+            <input id="status-text" class="input" placeholder="What’s on your mind?" />
+            <button id="post-status" class="btn">Post</button>
+          </div>
+          <div class="sub" style="margin-top:8px;">Media status next step.</div>
+        </div>
+      </div>
+
+      <!-- Users -->
+      <div id="panel-users" class="panel">
+        <div class="row" style="justify-content:space-between;margin-bottom:8px;">
+          <strong>Users</strong>
+          <div class="row">
+            <button id="pick-contacts" class="btn ghost">Pick contacts</button>
+          </div>
+        </div>
+        <div id="users-list" class="list"></div>
+      </div>
+    </div>
+
+    <!-- Bottom tabs -->
+    <div class="tabs">
+      <div id="tab-chats" class="tab active">Chats</div>
+      <div id="tab-status" class="tab">Status</div>
+      <div id="tab-users" class="tab">Users</div>
     </div>
 
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
       import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+      import {
+        getFirestore, doc, setDoc, getDoc,
+        collection, addDoc, serverTimestamp,
+        query, where, getDocs, orderBy, onSnapshot
+      } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyBIHeGBPieB4Q8hzYv-tmtRvxwHlY-8HiE",
@@ -59,26 +151,239 @@
 
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
+      const db = getFirestore(app);
 
-      const hello = document.getElementById('hello');
-      const pill = document.getElementById('user-pill');
-      const logoutBtn = document.getElementById('logout');
-
-      onAuthStateChanged(auth, (user) => {
-        if (!user) {
-          // Not logged in -> back to login page
-          window.location.href = "./";
-        } else {
-          const name = user.displayName || user.email || user.phoneNumber || 'User';
-          hello.textContent = "Welcome back, " + name + "!";
-          pill.textContent = "UID: " + user.uid.slice(0,8) + "…";
-        }
+      // Tabs
+      const mapTabs = [
+        {t:'tab-chats', p:'panel-chats'},
+        {t:'tab-status', p:'panel-status'},
+        {t:'tab-users',  p:'panel-users' }
+      ];
+      mapTabs.forEach(({t,p})=>{
+        document.getElementById(t).onclick = ()=>{
+          mapTabs.forEach(({t,p})=>{
+            document.getElementById(t).classList.remove('active');
+            document.getElementById(p).classList.remove('active');
+          });
+          document.getElementById(t).classList.add('active');
+          document.getElementById(p).classList.add('active');
+        };
       });
 
-      logoutBtn.onclick = async () => {
-        await signOut(auth);
-        window.location.href = "./";
+      const pill = document.getElementById('user-pill');
+      document.getElementById('logout').onclick = async ()=>{ await signOut(auth); location.href = "./"; };
+
+      let me=null, currentPeer=null, unsubMessages=null;
+
+      onAuthStateChanged(auth, async (user)=>{
+        if(!user) return location.href="./";
+        me = user;
+        const name = user.displayName || user.phoneNumber || user.email || "User";
+        pill.textContent = (name.length>18? name.slice(0,18)+'…':name);
+
+        await upsertUser(user);
+        loadMyChats();
+        loadUsers();
+      });
+
+      async function upsertUser(user){
+        await setDoc(doc(db,"users",user.uid),{
+          uid:user.uid,
+          displayName:user.displayName || null,
+          email:user.email || null,
+          phone:user.phoneNumber || null,
+          photoURL:user.photoURL || null,
+          updatedAt: Date.now()
+        },{merge:true});
+      }
+
+      // Chats list
+      const chatListEl = document.getElementById('chat-list');
+
+      async function loadMyChats(){
+        chatListEl.innerHTML = '';
+        // Simple approach: collect peers from recent messages
+        const qFrom = query(collection(db,"messages"), where("from","==", me.uid), orderBy("ts","desc"));
+        const qTo   = query(collection(db,"messages"), where("to","==", me.uid),   orderBy("ts","desc"));
+        const seen = new Map();
+        const snaps = await Promise.all([getDocs(qFrom).catch(()=>({})), getDocs(qTo).catch(()=>({}))]);
+        snaps.forEach(s=>{
+          s?.forEach(d=>{
+            const m=d.data(); const peer = (m.from===me.uid? m.to : m.from);
+            if(!seen.has(peer)) seen.set(peer, m.ts?.toMillis?.() || 0);
+          });
+        });
+        if(seen.size===0){ chatListEl.innerHTML='<div class="item"><div class="sub">No chats yet. Tap New chat.</div></div>'; return; }
+
+        const peers = [...seen.entries()].sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+        for(const uid of peers){
+          const u = await getDoc(doc(db,"users",uid));
+          const user = u.exists()? u.data(): {displayName:'User', uid};
+          chatListEl.appendChild(chatItem(user));
+        }
+      }
+
+      function initials(n){ if(!n) return 'U'; const p=(n+'').split(/\s+/).slice(0,2); return p.map(s=>s[0]?.toUpperCase()).join('') || 'U'; }
+
+      function chatItem(user){
+        const div = document.createElement('div');
+        div.className='item';
+        div.innerHTML = `
+          <div class="avatar">${initials(user.displayName || user.phone || user.email)}</div>
+          <div style="min-width:0;flex:1;">
+            <div class="name">${user.displayName || user.phone || user.email || 'User'}</div>
+            <div class="sub">${user.phone || user.email || ''}</div>
+          </div>
+          <div class="row">
+            <button class="btn ghost" data-open="${user.uid}">Open</button>
+          </div>
+        `;
+        div.querySelector('[data-open]').onclick = ()=> openConversation(user);
+        return div;
+      }
+
+      // Conversation
+      const msgbox = document.getElementById('msgbox');
+      const msgInput = document.getElementById('msg');
+      const sendBtn  = document.getElementById('send');
+      const clearBtn = document.getElementById('clear-chat');
+
+      function renderMessage(m){
+        const b=document.createElement('div');
+        b.className='bubble ' + (m.from===me.uid ? 'me' : 'them');
+        b.textContent=m.text;
+        msgbox.appendChild(b);
+      }
+
+      async function openConversation(peerUser){
+        currentPeer = peerUser;
+        document.getElementById('conv-name').textContent = peerUser.displayName || peerUser.phone || peerUser.email || 'User';
+        document.getElementById('conv-sub').textContent  = 'Chatting securely';
+        document.getElementById('conv-avatar').textContent = initials(peerUser.displayName || peerUser.phone || peerUser.email);
+        msgbox.innerHTML='';
+
+        if(unsubMessages) unsubMessages();
+
+        // Simple stream: listen all and filter (phase‑1). Next step: threaded collection per pair.
+        const qAll = query(collection(db,"messages"), orderBy("ts","asc"));
+        unsubMessages = onSnapshot(qAll, (snap)=>{
+          msgbox.innerHTML='';
+          snap.forEach(d=>{
+            const m=d.data();
+            if((m.from===me.uid && m.to===peerUser.uid) || (m.from===peerUser.uid && m.to===me.uid)){
+              renderMessage(m);
+            }
+          });
+          msgbox.scrollTop = msgbox.scrollHeight;
+        });
+      }
+
+      sendBtn.onclick = async ()=>{
+        if(!currentPeer) return alert('Select a chat first');
+        const text = msgInput.value.trim();
+        if(!text) return;
+        await addDoc(collection(db,"messages"),{ from:me.uid, to:currentPeer.uid, text, ts:serverTimestamp() });
+        msgInput.value='';
       };
+      clearBtn.onclick = ()=>{ msgbox.innerHTML=''; };
+
+      // Users tab
+      const usersList = document.getElementById('users-list');
+
+      async function loadUsers(){
+        usersList.innerHTML='';
+        const qUsers = query(collection(db,"users"));
+        const snap = await getDocs(qUsers);
+        const all=[];
+        snap.forEach(d=>{ const u=d.data(); if(u.uid!==me.uid) all.push(u); });
+        if(all.length===0) usersList.innerHTML='<div class="item"><div class="sub">No users yet.</div></div>';
+        else all.forEach(u=> usersList.appendChild(userRow(u,true)));
+      }
+
+      function userRow(u,isUser){
+        const row=document.createElement('div');
+        row.className='item';
+        const title = u.displayName || u.phone || u.email || 'User';
+        row.innerHTML=`
+          <div class="avatar">${initials(title)}</div>
+          <div style="min-width:0;flex:1;">
+            <div class="name">${title}</div>
+            <div class="sub">${u.phone || u.email || ''}</div>
+          </div>
+          <div class="row">
+            ${isUser? `<button class="btn ghost" data-chat="${u.uid}">Message</button>`
+                     : `<button class="btn" data-invite="${u.contact||''}">Invite</button>`}
+          </div>`;
+        if(isUser){
+          row.querySelector('[data-chat]').onclick = async ()=>{
+            let peer=u;
+            if(!peer.uid){ const dd=await getDoc(doc(db,"users",u.uid)); if(dd.exists()) peer=dd.data(); }
+            openConversation(peer);
+          };
+        }else{
+          row.querySelector('[data-invite]').onclick = ()=>{
+            const shareText = `Join me on Samvaad! ${location.origin}${location.pathname.replace(/dashboard-pro\.html$/,'')}`;
+            if(navigator.share){ navigator.share({title:"Samvaad invite",text:shareText}).catch(()=>{}); }
+            else alert('Copy & share:\n'+shareText);
+          };
+        }
+        return row;
+      }
+
+      // Contacts → match to users (Phone-first; email fallback)
+      document.getElementById('pick-contacts').onclick = async ()=>{
+        if (!('contacts' in navigator) || !('select' in navigator.contacts)) {
+          alert('Contacts Picker not supported on this device/browser.');
+          return;
+        }
+        const list = await navigator.contacts.select(['name','tel','email'], {multiple:true});
+        if(!list || list.length===0) return;
+
+        const phones=[]; const emails=[];
+        const rows = list.map(c=>{
+          const name = Array.isArray(c.name)? c.name[0] : c.name;
+          const tel  = Array.isArray(c.tel)?  c.tel[0]  : c.tel;
+          const email= Array.isArray(c.email)?c.email[0]: c.email;
+          const phone = normPhone(tel||'');
+          if(phone) phones.push(phone);
+          if(email) emails.push(String(email).toLowerCase());
+          return { name:name || phone || email || 'Unknown', phone, email: email? String(email).toLowerCase():null };
+        });
+
+        const foundByPhone = phones.length? await findUsersBy('phone', phones) : new Map();
+        const foundByEmail = emails.length? await findUsersBy('email', emails) : new Map();
+
+        usersList.innerHTML='';
+        let shown=false;
+        rows.forEach(r=>{
+          let m=null;
+          if(r.phone && foundByPhone.has(r.phone)) m=foundByPhone.get(r.phone);
+          else if(r.email && foundByEmail.has(r.email)) m=foundByEmail.get(r.email);
+          if(m){ usersList.appendChild(userRow(m,true)); shown=true; }
+        });
+        rows.forEach(r=>{
+          let m=null;
+          if(r.phone && foundByPhone.has(r.phone)) m=foundByPhone.get(r.phone);
+          else if(r.email && foundByEmail.has(r.email)) m=foundByEmail.get(r.email);
+          if(!m){ usersList.appendChild(userRow({displayName:r.name, phone:r.phone, email:r.email, contact:r.phone||r.email},false)); shown=true; }
+        });
+        if(!shown) usersList.innerHTML='<div class="item"><div class="sub">No matches from contacts.</div></div>';
+      };
+
+      function normPhone(s){
+        if(!s) return null; let x=s.replace(/[^\d+]/g,''); if(x.startsWith('00')) x='+'+x.slice(2);
+        if(!x.startsWith('+')) return null; if(x.length<10 || x.length>16) return null; return x;
+      }
+      async function findUsersBy(field, values){
+        const chunks=[]; for(let i=0;i<values.length;i+=10) chunks.push(values.slice(i,i+10));
+        const map=new Map();
+        for(const batch of chunks){
+          const qRef = query(collection(db,'users'), where(field,'in', batch));
+          const snap = await getDocs(qRef);
+          snap.forEach(d=>{ const u=d.data(); if(u[field]) map.set(u[field], u); });
+        }
+        return map;
+      }
     </script>
   </body>
 </html>
