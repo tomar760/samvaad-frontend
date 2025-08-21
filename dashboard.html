@@ -9,39 +9,47 @@
     <style>
       :root{
         --bg:#f7f9fc; --text:#0f172a; --muted:#64748b; --line:#e5e7eb;
-        --brand:#2563eb; --accent:#10b981; --card:#fff;
+        --brand:#2563eb; --accent:#10b981; --card:#fff; --chip:#eef2ff;
       }
       *{box-sizing:border-box}
       body{margin:0;background:var(--bg);color:var(--text);font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+
+      /* Animations */
+      @keyframes pop { from{transform:translateY(8px);opacity:.0} to{transform:none;opacity:1} }
+      @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
       /* Top bar */
       .top{position:sticky;top:0;z-index:20;background:#ffffffcc;backdrop-filter:saturate(180%) blur(10px);
         border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px}
       .brand{display:flex;align-items:center;gap:10px}
-      .mark{width:36px;height:36px;border-radius:10px;object-fit:cover}
+      .mark{width:36px;height:36px;border-radius:10px;object-fit:cover;box-shadow:0 6px 14px rgba(37,99,235,.18)}
       .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#f1f5f9;font-size:12px}
-      .btn{padding:10px 12px;border:none;border-radius:12px;background:var(--brand);color:#fff;font-weight:800;cursor:pointer}
+      .btn{padding:10px 12px;border:none;border-radius:12px;background:var(--brand);color:#fff;font-weight:800;cursor:pointer;transition:transform .08s}
+      .btn:active{transform:translateY(1px)}
       .btn.ghost{background:#e8f3f1;color:#0f172a}
 
       /* Shell */
       .wrap{max-width:1100px;margin:14px auto;padding:0 12px}
-      .grid{display:grid;grid-template-columns:320px 1fr;gap:14px}
-      @media(max-width:900px){.grid{grid-template-columns:1fr}}
+      .grid{display:grid;grid-template-columns:340px 1fr;gap:14px}
+      @media(max-width:940px){.grid{grid-template-columns:1fr}}
 
-      .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;
-        box-shadow:0 8px 24px rgba(2,6,23,.06)}
-      .list{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-      .item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #f1f5f9}
+      .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;
+        box-shadow:0 12px 30px rgba(2,6,23,.06);animation:pop .35s ease}
+      .list{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;animation:fadeIn .25s ease}
+      .item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #f1f5f9;transition:background .12s}
+      .item:hover{background:#fafcff}
       .item:last-child{border-bottom:none}
-      .avatar{width:40px;height:40px;border-radius:50%;background:#eef2ff;display:grid;place-items:center;font-weight:800;color:#334155}
+      .avatar{width:42px;height:42px;border-radius:50%;background:#eef2ff;display:grid;place-items:center;font-weight:800;color:#334155}
       .name{font-weight:700}
       .sub{font-size:12px;color:var(--muted)}
       .row{display:flex;align-items:center;gap:8px}
-      .input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px}
-      .msgbox{height:360px;border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff;overflow:auto}
-      .bubble{max-width:70%;padding:8px 10px;border-radius:12px;margin:6px 0}
+      .input{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fbfdff}
+      .msgbox{height:420px;border:1px solid var(--line);border-radius:14px;padding:10px;background:#fff;overflow:auto}
+      .bubble{max-width:72%;padding:10px 12px;border-radius:14px;margin:6px 0;line-height:1.35}
       .me{background:#e8f3ff;margin-left:auto}
       .them{background:#f1f5f9}
+      .empty{display:grid;place-items:center;padding:30px;border:1px dashed var(--line);border-radius:14px;background:#fff}
+      .empty .hint{font-size:13px;color:var(--muted)}
 
       /* Panels + Tabs */
       .panel{display:none}
@@ -49,13 +57,17 @@
       .tabs{position:sticky;bottom:0;z-index:15;background:#fff;border-top:1px solid var(--line);display:flex}
       .tab{flex:1;padding:10px 6px;text-align:center;cursor:pointer;font-weight:700;color:#334155}
       .tab.active{color:#0f172a;border-top:3px solid var(--brand);background:#fff}
+
+      /* Section headers */
+      .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+      .title{font-weight:800}
+      .chip{padding:6px 10px;border-radius:999px;background:var(--chip);font-size:12px}
     </style>
   </head>
   <body>
     <!-- Top bar -->
     <div class="top">
       <div class="brand">
-        <!-- images/logo-mark.png (square icon) -->
         <img src="./images/logo-mark.png" class="mark" alt="Samvaad">
         <strong>Samvaad</strong>
       </div>
@@ -66,22 +78,27 @@
     </div>
 
     <div class="wrap">
-      <!-- Tabs content -->
+      <!-- Chats panel -->
       <div id="panel-chats" class="panel active">
         <div class="grid">
           <!-- Left: chats list -->
           <div>
-            <div class="row" style="justify-content:space-between;margin-bottom:8px;">
-              <strong>Chats</strong>
+            <div class="section-head">
+              <div class="row">
+                <span class="title">Chats</span>
+                <span id="chat-count" class="chip">0</span>
+              </div>
               <button id="new-chat" class="btn ghost">New chat</button>
             </div>
-            <div id="chat-list" class="list">
-              <!-- filled by JS -->
+            <div id="chat-list" class="list"></div>
+            <div id="chats-empty" class="empty" style="display:none;margin-top:10px;">
+              <div class="hint">No chats yet. Start a conversation from Users tab or wait for someone to message you.</div>
             </div>
           </div>
+
           <!-- Right: conversation -->
           <div class="card">
-            <div class="row" style="justify-content:space-between;margin-bottom:6px;">
+            <div class="section-head">
               <div class="row">
                 <div id="conv-avatar" class="avatar">S</div>
                 <div>
@@ -91,8 +108,8 @@
               </div>
               <div class="row"><button id="clear-chat" class="btn ghost">Clear</button></div>
             </div>
-            <div id="msgbox" class="msgbox"><div class="sub">Choose a chat from left or start a new one.</div></div>
-            <div class="row" style="margin-top:8px;">
+            <div id="msgbox" class="msgbox"><div class="sub">Choose a chat from left.</div></div>
+            <div class="row" style="margin-top:10px;">
               <input id="msg" class="input" placeholder="Write a message…" />
               <button id="send" class="btn">Send</button>
             </div>
@@ -103,7 +120,7 @@
       <!-- Status -->
       <div id="panel-status" class="panel">
         <div class="card">
-          <strong>Status</strong>
+          <div class="section-head"><span class="title">Status</span></div>
           <div class="row" style="margin-top:6px;">
             <input id="status-text" class="input" placeholder="What’s on your mind?" />
             <button id="post-status" class="btn">Post</button>
@@ -114,13 +131,19 @@
 
       <!-- Users -->
       <div id="panel-users" class="panel">
-        <div class="row" style="justify-content:space-between;margin-bottom:8px;">
-          <strong>Users</strong>
+        <div class="section-head">
+          <div class="row">
+            <span class="title">Users</span>
+            <span id="user-count" class="chip">0</span>
+          </div>
           <div class="row">
             <button id="pick-contacts" class="btn ghost">Pick contacts</button>
           </div>
         </div>
         <div id="users-list" class="list"></div>
+        <div id="users-empty" class="empty" style="display:none;margin-top:10px;">
+          <div class="hint">No users found yet.</div>
+        </div>
       </div>
     </div>
 
@@ -137,7 +160,7 @@
       import {
         getFirestore, doc, setDoc, getDoc,
         collection, addDoc, serverTimestamp,
-        query, where, getDocs, orderBy, onSnapshot
+        query, where, getDocs, orderBy, onSnapshot, limit
       } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
       const firebaseConfig = {
@@ -170,8 +193,22 @@
         };
       });
 
-      const pill = document.getElementById('user-pill');
-      document.getElementById('logout').onclick = async ()=>{ await signOut(auth); location.href = "./"; };
+      const pill  = document.getElementById('user-pill');
+      const logoutBtn = document.getElementById('logout');
+      logoutBtn.onclick = async ()=>{ await signOut(auth); location.href = "./"; };
+
+      const chatListEl = document.getElementById('chat-list');
+      const chatCountEl = document.getElementById('chat-count');
+      const chatsEmpty  = document.getElementById('chats-empty');
+
+      const usersList = document.getElementById('users-list');
+      const userCountEl = document.getElementById('user-count');
+      const usersEmpty  = document.getElementById('users-empty');
+
+      const msgbox   = document.getElementById('msgbox');
+      const msgInput = document.getElementById('msg');
+      const sendBtn  = document.getElementById('send');
+      const clearBtn = document.getElementById('clear-chat');
 
       let me=null, currentPeer=null, unsubMessages=null;
 
@@ -182,8 +219,8 @@
         pill.textContent = (name.length>18? name.slice(0,18)+'…':name);
 
         await upsertUser(user);
-        loadMyChats();
-        loadUsers();
+        await loadMyChats();            // अगर कोई message history नहीं है → list empty + empty state दिखेगा
+        await loadUsers();              // Samvaad users
       });
 
       async function upsertUser(user){
@@ -197,14 +234,19 @@
         },{merge:true});
       }
 
-      // Chats list
-      const chatListEl = document.getElementById('chat-list');
+      // Helpers
+      function initials(n){ if(!n) return 'U'; const p=(n+'').split(/\s+/).slice(0,2); return p.map(s=>s[0]?.toUpperCase()).join('') || 'U'; }
+      function setEmpty(el, show){ el.style.display = show? 'grid':'none'; }
 
+      // CHATS: only threads that have at least one message
       async function loadMyChats(){
         chatListEl.innerHTML = '';
-        // Simple approach: collect peers from recent messages
-        const qFrom = query(collection(db,"messages"), where("from","==", me.uid), orderBy("ts","desc"));
-        const qTo   = query(collection(db,"messages"), where("to","==", me.uid),   orderBy("ts","desc"));
+        chatCountEl.textContent = '0';
+        setEmpty(chatsEmpty, false);
+
+        // Grab last 50 messages where I am sender or receiver, build peer set
+        const qFrom = query(collection(db,"messages"), where("from","==", me.uid), orderBy("ts","desc"), limit(50));
+        const qTo   = query(collection(db,"messages"), where("to","==", me.uid),   orderBy("ts","desc"), limit(50));
         const seen = new Map();
         const snaps = await Promise.all([getDocs(qFrom).catch(()=>({})), getDocs(qTo).catch(()=>({}))]);
         snaps.forEach(s=>{
@@ -213,17 +255,21 @@
             if(!seen.has(peer)) seen.set(peer, m.ts?.toMillis?.() || 0);
           });
         });
-        if(seen.size===0){ chatListEl.innerHTML='<div class="item"><div class="sub">No chats yet. Tap New chat.</div></div>'; return; }
 
-        const peers = [...seen.entries()].sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+        if(seen.size===0){
+          setEmpty(chatsEmpty, true);
+          return;
+        }
+
+        const peers = [...seen.entries()].sort((a,b)=>b[1]-a[1]).map(x=>x);
+        chatCountEl.textContent = String(peers.length);
+
         for(const uid of peers){
           const u = await getDoc(doc(db,"users",uid));
           const user = u.exists()? u.data(): {displayName:'User', uid};
           chatListEl.appendChild(chatItem(user));
         }
       }
-
-      function initials(n){ if(!n) return 'U'; const p=(n+'').split(/\s+/).slice(0,2); return p.map(s=>s[0]?.toUpperCase()).join('') || 'U'; }
 
       function chatItem(user){
         const div = document.createElement('div');
@@ -242,36 +288,26 @@
         return div;
       }
 
-      // Conversation
-      const msgbox = document.getElementById('msgbox');
-      const msgInput = document.getElementById('msg');
-      const sendBtn  = document.getElementById('send');
-      const clearBtn = document.getElementById('clear-chat');
-
-      function renderMessage(m){
-        const b=document.createElement('div');
-        b.className='bubble ' + (m.from===me.uid ? 'me' : 'them');
-        b.textContent=m.text;
-        msgbox.appendChild(b);
-      }
-
       async function openConversation(peerUser){
         currentPeer = peerUser;
         document.getElementById('conv-name').textContent = peerUser.displayName || peerUser.phone || peerUser.email || 'User';
         document.getElementById('conv-sub').textContent  = 'Chatting securely';
         document.getElementById('conv-avatar').textContent = initials(peerUser.displayName || peerUser.phone || peerUser.email);
-        msgbox.innerHTML='';
+        msgbox.innerHTML='<div class="sub">Loading…</div>';
 
         if(unsubMessages) unsubMessages();
 
-        // Simple stream: listen all and filter (phase‑1). Next step: threaded collection per pair.
+        // Phase‑1: stream all ordered, filter pair (simple; works for MVP)
         const qAll = query(collection(db,"messages"), orderBy("ts","asc"));
         unsubMessages = onSnapshot(qAll, (snap)=>{
           msgbox.innerHTML='';
           snap.forEach(d=>{
             const m=d.data();
             if((m.from===me.uid && m.to===peerUser.uid) || (m.from===peerUser.uid && m.to===me.uid)){
-              renderMessage(m);
+              const b=document.createElement('div');
+              b.className = 'bubble ' + (m.from===me.uid? 'me':'them');
+              b.textContent = m.text;
+              msgbox.appendChild(b);
             }
           });
           msgbox.scrollTop = msgbox.scrollHeight;
@@ -287,17 +323,14 @@
       };
       clearBtn.onclick = ()=>{ msgbox.innerHTML=''; };
 
-      // Users tab
-      const usersList = document.getElementById('users-list');
-
+      // USERS
       async function loadUsers(){
-        usersList.innerHTML='';
-        const qUsers = query(collection(db,"users"));
-        const snap = await getDocs(qUsers);
-        const all=[];
-        snap.forEach(d=>{ const u=d.data(); if(u.uid!==me.uid) all.push(u); });
-        if(all.length===0) usersList.innerHTML='<div class="item"><div class="sub">No users yet.</div></div>';
-        else all.forEach(u=> usersList.appendChild(userRow(u,true)));
+        usersList.innerHTML=''; setEmpty(usersEmpty, false); userCountEl.textContent='0';
+        const snap = await getDocs(query(collection(db,"users")));
+        const all=[]; snap.forEach(d=>{ const u=d.data(); if(u.uid!==me.uid) all.push(u); });
+        if(all.length===0){ setEmpty(usersEmpty,true); return; }
+        userCountEl.textContent = String(all.length);
+        all.forEach(u=> usersList.appendChild(userRow(u,true)));
       }
 
       function userRow(u,isUser){
@@ -322,7 +355,7 @@
           };
         }else{
           row.querySelector('[data-invite]').onclick = ()=>{
-            const shareText = `Join me on Samvaad! ${location.origin}${location.pathname.replace(/dashboard-pro\.html$/,'')}`;
+            const shareText = `Join me on Samvaad! ${location.origin}${location.pathname.replace(/dashboard\.html$/,'')}`;
             if(navigator.share){ navigator.share({title:"Samvaad invite",text:shareText}).catch(()=>{}); }
             else alert('Copy & share:\n'+shareText);
           };
@@ -330,10 +363,10 @@
         return row;
       }
 
-      // Contacts → match to users (Phone-first; email fallback)
+      // Contacts → match users / invite others
       document.getElementById('pick-contacts').onclick = async ()=>{
         if (!('contacts' in navigator) || !('select' in navigator.contacts)) {
-          alert('Contacts Picker not supported on this device/browser.');
+          alert('Contacts Picker not supported here.');
           return;
         }
         const list = await navigator.contacts.select(['name','tel','email'], {multiple:true});
@@ -342,8 +375,8 @@
         const phones=[]; const emails=[];
         const rows = list.map(c=>{
           const name = Array.isArray(c.name)? c.name[0] : c.name;
-          const tel  = Array.isArray(c.tel)?  c.tel[0]  : c.tel;
-          const email= Array.isArray(c.email)?c.email[0]: c.email;
+          const tel  = Array.isArray(c.tel)?  c.tel  : c.tel;
+          const email= Array.isArray(c.email)?c.email: c.email;
           const phone = normPhone(tel||'');
           if(phone) phones.push(phone);
           if(email) emails.push(String(email).toLowerCase());
@@ -353,21 +386,20 @@
         const foundByPhone = phones.length? await findUsersBy('phone', phones) : new Map();
         const foundByEmail = emails.length? await findUsersBy('email', emails) : new Map();
 
-        usersList.innerHTML='';
-        let shown=false;
+        usersList.innerHTML=''; let had=false;
         rows.forEach(r=>{
           let m=null;
           if(r.phone && foundByPhone.has(r.phone)) m=foundByPhone.get(r.phone);
           else if(r.email && foundByEmail.has(r.email)) m=foundByEmail.get(r.email);
-          if(m){ usersList.appendChild(userRow(m,true)); shown=true; }
+          if(m){ usersList.appendChild(userRow(m,true)); had=true; }
         });
         rows.forEach(r=>{
           let m=null;
           if(r.phone && foundByPhone.has(r.phone)) m=foundByPhone.get(r.phone);
           else if(r.email && foundByEmail.has(r.email)) m=foundByEmail.get(r.email);
-          if(!m){ usersList.appendChild(userRow({displayName:r.name, phone:r.phone, email:r.email, contact:r.phone||r.email},false)); shown=true; }
+          if(!m){ usersList.appendChild(userRow({displayName:r.name, phone:r.phone, email:r.email, contact:r.phone||r.email},false)); had=true; }
         });
-        if(!shown) usersList.innerHTML='<div class="item"><div class="sub">No matches from contacts.</div></div>';
+        if(!had) setEmpty(usersEmpty,true);
       };
 
       function normPhone(s){
