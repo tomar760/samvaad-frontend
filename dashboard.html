@@ -7,12 +7,8 @@
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
-    <link
-      rel="stylesheet"
-      as="style"
-      onload="this.rel='stylesheet'"
-      href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900"
-    />
+    <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900" />
 
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -26,31 +22,19 @@
               line: '#e7efee',
               brand: { 600: '#2563eb' },
               mint: { 50: '#e8f3f1', 500: '#50958a' },
-              chat: {
-                base: '#12211f',
-                panel: '#254640',
-                mint: '#20dfbf',
-                sub: '#95c6be',
-                line: '#2b4b45'
-              }
+              chat: { base:'#12211f', panel:'#254640', mint:'#20dfbf', sub:'#95c6be', line:'#2b4b45' }
             },
-            boxShadow: {
-              card: '0 12px 30px rgba(2,6,23,.06)',
-              soft: '0 8px 20px rgba(2,6,23,.05)',
-            },
-            borderRadius: { xl2: '1rem' },
+            boxShadow: { card:'0 12px 30px rgba(2,6,23,.06)', soft:'0 8px 20px rgba(2,6,23,.05)' },
+            borderRadius: { xl2:'1rem' }
           },
-          fontFamily: {
-            sans: ['Inter', 'Noto Sans', 'system-ui', 'sans-serif'],
-          },
-        },
-      };
+          fontFamily: { sans:['Inter','Noto Sans','system-ui','sans-serif'] }
+        }
+      }
     </script>
     <style>
-      .tap { transition: transform .06s ease; }
-      .tap:active { transform: translateY(1px); }
-      .card-reveal { animation: reveal .25s ease both; }
-      @keyframes reveal { from { opacity:0; transform: translateY(8px) } to { opacity:1; transform:none } }
+      .tap{transition:transform .06s ease}.tap:active{transform:translateY(1px)}
+      .card-reveal{animation:reveal .25s ease both}
+      @keyframes reveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
     </style>
   </head>
   <body class="bg-bg text-ink font-sans min-h-screen overflow-x-hidden">
@@ -78,8 +62,7 @@
       <aside class="bg-bg rounded-xl2 p-4 min-h-[620px] flex flex-col justify-between">
         <div class="space-y-4">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-cover bg-center"
-                 style="background-image:url('https://i.pravatar.cc/100?img=12')"></div>
+            <div class="w-10 h-10 rounded-full bg-cover bg-center" style="background-image:url('https://i.pravatar.cc/100?img=12')"></div>
             <h1 id="user-name" class="text-base font-medium">Guest</h1>
           </div>
 
@@ -116,7 +99,6 @@
             </button>
           </nav>
         </div>
-
         <div class="hidden md:block text-xs text-gray-500 px-1">App version 0.2.0</div>
       </aside>
 
@@ -172,22 +154,17 @@
 
         <!-- VIEW: Settings -->
         <section id="view-settings" class="block">
-          <!-- Settings content (unchanged) -->
           <section class="space-y-2">
             <h3 class="px-4 pt-2 pb-1 text-lg font-bold">Account</h3>
-
             <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
               <div class="flex items-center gap-4">
-                <div class="h-14 w-14 rounded-full bg-cover bg-center"
-                     style="background-image:url('https://i.pravatar.cc/100?img=12')"></div>
+                <div class="h-14 w-14 rounded-full bg-cover bg-center" style="background-image:url('https://i.pravatar.cc/100?img=12')"></div>
                 <div>
                   <p class="font-medium">Profile</p>
                   <p id="acc-name" class="text-mint-500 text-sm">Loading…</p>
                 </div>
               </div>
-              <div class="shrink-0 text-ink">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
-              </div>
+              <div class="shrink-0 text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg></div>
             </div>
 
             <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
@@ -200,9 +177,7 @@
                   <p id="acc-phone" class="text-mint-500 text-sm">—</p>
                 </div>
               </div>
-              <div class="shrink-0 text-ink">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
-              </div>
+              <div class="shrink-0 text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg></div>
             </div>
 
             <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
@@ -215,12 +190,11 @@
                   <p class="text-mint-500 text-sm">Last seen recently</p>
                 </div>
               </div>
-              <div class="shrink-0 text-ink">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
-              </div>
+              <div class="shrink-0 text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg></div>
             </div>
           </section>
 
+          <!-- Notifications -->
           <section class="mt-2 space-y-2">
             <h3 class="px-4 pt-4 pb-2 text-lg font-bold">Notifications</h3>
             <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
@@ -233,12 +207,11 @@
                   <p class="text-mint-500 text-sm">Message, group & call notifications</p>
                 </div>
               </div>
-              <div class="shrink-0 text-ink">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
-              </div>
+              <div class="shrink-0 text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg></div>
             </div>
           </section>
 
+          <!-- Help -->
           <section class="mt-2 space-y-2">
             <h3 class="px-4 pt-4 pb-2 text-lg font-bold">Help</h3>
 
@@ -249,9 +222,7 @@
                 </div>
                 <p class="text-base">Help center</p>
               </div>
-              <div class="shrink-0 text-ink">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
-              </div>
+              <div class="shrink-0 text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg></div>
             </div>
 
             <div class="flex items-center gap-4 bg-bg px-4 min-h-14 justify-between rounded-xl border border-line card-reveal">
@@ -261,9 +232,7 @@
                 </div>
                 <p class="text-base">Contact us</p>
               </div>
-              <div class="shrink-0 text-ink">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
-              </div>
+              <div class="shrink-0 text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg></div>
             </div>
 
             <div class="flex items-center gap-4 bg-bg px-4 min-h-14 justify-between rounded-xl border border-line card-reveal">
@@ -273,9 +242,7 @@
                 </div>
                 <p class="text-base">Terms and privacy policy</p>
               </div>
-              <div class="shrink-0 text-ink">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
-              </div>
+              <div class="shrink-0 text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg></div>
             </div>
           </section>
 
@@ -293,6 +260,16 @@
       </main>
     </div>
 
-    <!-- Firebase binding + Chats glue -->
+    <!-- Firebase + Logic -->
     <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+      import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+      import {
+        getFirestore, doc, getDoc, collection, addDoc, serverTimestamp,
+        query, orderBy, onSnapshot
+      } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyBIHeGBPieB4Q8hzYv-tmtRvxwHlY-8HiE",
+        authDomain: "samvaad-7970b.firebaseapp.com",
+        projectId: "samv
