@@ -6,52 +6,75 @@
     <title>Samvaad • Login</title>
     <link rel="stylesheet" href="./style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- Favicon (optional, inline SVG file recommended) -->
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <style>
       /* Only one "Use phone OTP" link below Login button */
-      .alt-link {
-        display: block;
-        margin-top: 10px;
-        text-align: center;
-        background: #f1f5f9;
-        border-radius: 10px;
-        padding: 10px;
-        font-weight: 700;
-        color: #0f172a;
-        text-decoration: none;
+      .alt-link{
+        display:block;margin-top:10px;text-align:center;background:#f1f5f9;
+        border-radius:10px;padding:10px;font-weight:700;color:#0f172a;text-decoration:none;
       }
-      /* Mobile overlap quick fix (keeps layout tidy on small screens) */
-      @media (max-width: 650px) {
-        .toggle-panel h1 { font-size: 28px !important; }
+      /* Mobile header overlap quick-fix */
+      @media (max-width:650px){
+        .toggle-panel h1{font-size:28px!important}
+        .toggle-panel p{max-width:90%;margin-left:auto;margin-right:auto}
       }
+      /* Inline brand (optional): place where you want logo+name */
+      .sv-brand{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+      .sv-logo{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;
+        box-shadow:0 8px 24px rgba(16,185,129,.18),0 2px 8px rgba(37,99,235,.15)}
+      .sv-logo svg{width:100%;height:100%}
+      .sv-word{font-weight:800;letter-spacing:.2px}
     </style>
   </head>
   <body>
     <div class="container" id="container">
+      <!-- OPTIONAL brand on top of the card (uncomment if needed)
+      <div class="sv-brand" style="position:absolute;left:18px;top:14px;z-index:3;">
+        <div class="sv-logo">
+          <svg viewBox="0 0 64 64" aria-label="Samvaad logo">
+            <defs>
+              <linearGradient id="sv-g" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#2563EB"/><stop offset="100%" stop-color="#10B981"/>
+              </linearGradient>
+            </defs>
+            <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#sv-g)"/>
+            <path d="M22 54 L30 46 H42" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20 28c0-6 6-10 12-10h10c2 0 4 2 4 4s-2 4-4 4h-9c-2 0-3 1-3 2s1 2 3 2h6c6 0 10 3 10 8s-5 10-12 10h-3
+                     c-2 0-4-2-4-4s2-4 4-4h4c3 0 5-2 5-3s-2-3-5-3h-5c-6 0-12-3-12-8z" fill="white" opacity="0.95"/>
+          </svg>
+        </div>
+        <strong class="sv-word">Samvaad</strong>
+      </div>
+      -->
+
       <!-- Login -->
       <div class="form-box login">
         <form id="login-form" onsubmit="return false;">
           <h1>Welcome back</h1>
+
           <div class="input-box">
             <input id="login-email" type="email" placeholder="Email" />
             <i class="bx bx-envelope"></i>
           </div>
+
           <div class="input-box">
             <input id="login-pass" type="password" placeholder="Password" />
             <i class="bx bx-lock-alt"></i>
           </div>
+
           <div class="forgot-link">
             <a id="forgot-link" href="javascript:void(0)">Forgot password?</a>
           </div>
+
           <button id="login-btn" class="btn">Sign in</button>
 
-          <!-- Single phone OTP link (keep only this one) -->
+          <!-- Single phone OTP link (only here) -->
           <a class="alt-link" href="./phone.html">Use phone OTP</a>
 
           <p class="muted" id="login-msg"></p>
+
           <p>Or continue with</p>
           <div class="social-icons">
             <a href="javascript:void(0)" title="Coming soon">G</a>
@@ -65,21 +88,23 @@
       <div class="form-box register">
         <form id="signup-form" onsubmit="return false;">
           <h1>Create account</h1>
+
           <div class="input-box">
             <input id="su-name" type="text" placeholder="Full name" />
             <i class="bx bx-user"></i>
           </div>
+
           <div class="input-box">
             <input id="su-email" type="email" placeholder="Email" />
             <i class="bx bx-envelope"></i>
           </div>
+
           <div class="input-box">
             <input id="su-pass" type="password" placeholder="Password (min 6 chars)" />
             <i class="bx bx-lock-alt"></i>
           </div>
-          <button id="signup-btn" class="btn">Sign up</button>
 
-          <!-- No phone link here (as requested) -->
+          <button id="signup-btn" class="btn">Sign up</button>
           <p class="muted" id="signup-msg"></p>
         </form>
       </div>
@@ -100,10 +125,7 @@
     </div>
 
     <!-- Icons -->
-    <link
-      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
 
     <!-- Firebase Email/Password logic -->
     <script type="module" src="./src/auth.js"></script>
@@ -111,10 +133,8 @@
     <!-- UI toggle -->
     <script>
       const container = document.getElementById('container');
-      document.getElementById('show-register').onclick = () =>
-        container.classList.add('active');
-      document.getElementById('show-login').onclick = () =>
-        container.classList.remove('active');
+      document.getElementById('show-register').onclick = () => container.classList.add('active');
+      document.getElementById('show-login').onclick = () => container.classList.remove('active');
     </script>
   </body>
 </html>
