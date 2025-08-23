@@ -81,7 +81,7 @@
             </button>
             <button class="tap flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-white border border-transparent hover:border-line" data-nav="updates">
               <span class="text-ink">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 256 256"><path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,0,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92Z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 256 256"><path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92Z"/></svg>
               </span>
               <span class="text-sm font-medium">Updates</span>
             </button>
@@ -127,9 +127,36 @@
             </div>
           </div>
 
-          <main id="timeline" class="px-4 md:px-40 pb-24 space-y-2">
-            <div id="chat-empty" class="text-sm text-chat-sub">Open a chat from Users or pass ?peer=UID in URL.</div>
+          <main id="timeline" class="px-4 md:px-40 pb-28 space-y-2">
+            <div id="chat-empty" class="text-sm text-chat-sub">Open a chat from Users or tap + to start.</div>
           </main>
+
+          <!-- FAB like WhatsApp -->
+          <button id="fab-new-chat"
+            class="fixed bottom-24 right-5 md:right-10 h-14 w-14 rounded-full bg-chat-mint text-[#12211f] shadow-[0_10px_24px_rgba(0,0,0,.35)] grid place-items-center tap"
+            title="New chat">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M13 11V6a1 1 0 1 0-2 0v5H6a1 1 0 1 0 0 2h5v5a1 1 0 1 0 2 0v-5h5a1 1 0 1 0 0-2h-5z"/></svg>
+          </button>
+
+          <!-- Contacts Modal -->
+          <div id="contacts-modal" class="fixed inset-0 z-50 hidden">
+            <div class="absolute inset-0 bg-black/50"></div>
+            <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-4 max-h-[70vh] overflow-auto
+                        md:left-1/2 md:top-1/2 md:bottom-auto md:right-auto md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-2xl md:w-[520px]">
+              <div class="flex items-center justify-between mb-3">
+                <div class="font-bold">Start new chat</div>
+                <button id="contacts-close" class="tap px-3 py-1 rounded-lg bg-gray-100">Close</button>
+              </div>
+              <div class="mb-3">
+                <input id="contacts-search" placeholder="Search contacts"
+                       class="w-full border border-gray-200 rounded-xl px-3 py-2"/>
+              </div>
+              <div id="contacts-list" class="divide-y divide-gray-100"></div>
+              <div id="contacts-empty" class="text-sm text-gray-500 py-6 hidden">
+                No contacts found or permission denied.
+              </div>
+            </div>
+          </div>
 
           <footer class="fixed bottom-0 inset-x-0 bg-chat-base/95 backdrop-blur border-t border-chat-line">
             <div class="px-4 md:px-40 py-3">
@@ -152,30 +179,25 @@
           </footer>
         </section>
 
-        <!-- VIEW: Settings (Placeholders only) -->
+        <!-- VIEW: Settings (placeholders only) -->
         <section id="view-settings" class="block">
           <div class="px-4 pt-2 pb-1">
             <h3 class="text-lg font-bold">Settings</h3>
           </div>
-
-          <!-- Simple clickable list, all empty for now -->
           <div class="divide-y divide-line bg-white rounded-xl border border-line mx-4 overflow-hidden">
             <button class="w-full text-left px-4 py-3 hover:bg-mint-50">Profile</button>
             <button class="w-full text-left px-4 py-3 hover:bg-mint-50">Phone</button>
             <button class="w-full text-left px-4 py-3 hover:bg-mint-50">Privacy</button>
           </div>
-
           <div class="mt-4 divide-y divide-line bg-white rounded-xl border border-line mx-4 overflow-hidden">
             <button class="w-full text-left px-4 py-3 hover:bg-mint-50">Notifications</button>
           </div>
-
           <div class="mt-4 divide-y divide-line bg-white rounded-xl border border-line mx-4 overflow-hidden">
             <button class="w-full text-left px-4 py-3 hover:bg-mint-50">Help center</button>
             <button class="w-full text-left px-4 py-3 hover:bg-mint-50">Contact us</button>
             <button class="w-full text-left px-4 py-3 hover:bg-mint-50">Terms and privacy policy</button>
           </div>
-
-          <p class="text-xs text-gray-500 px-5 mt-4">All settings are placeholders right now. We will wire them next.</p>
+          <p class="text-xs text-gray-500 px-5 mt-4">All settings are placeholders right now.</p>
         </section>
 
         <!-- Placeholders -->
@@ -197,7 +219,7 @@
       import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
       import {
         getFirestore, doc, getDoc, collection, addDoc, serverTimestamp,
-        query, orderBy, onSnapshot
+        query, orderBy, onSnapshot, where, getDocs
       } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
       const firebaseConfig = {
@@ -215,22 +237,18 @@
 
       // Auth bind
       const nameEl = document.getElementById('user-name');
-      const phoneEl = document.getElementById('acc-phone'); // may be absent now
-      const accName = document.getElementById('acc-name');  // may be absent now
       const uidPill = document.getElementById('uid-pill');
 
       onAuthStateChanged(auth, (user)=>{
         if(!user) return location.href = './';
         const n = user.displayName || user.phoneNumber || user.email || 'User';
         if (nameEl) nameEl.textContent = n;
-        if (accName) accName.textContent = n;
-        if (phoneEl) phoneEl.textContent = user.phoneNumber || '—';
         if (uidPill) uidPill.textContent = `UID: ${user.uid.slice(0,6)}…`;
         me = user;
         setPeerFromURL();
       });
 
-      // Robust logout
+      // Logout
       const logoutBtn = document.getElementById('logout');
       if (logoutBtn){
         logoutBtn.addEventListener('click', async ()=>{
@@ -269,7 +287,7 @@
         if (btn) btn.addEventListener('click', ()=> switchView(n));
       });
 
-      // Chats glue (MVP same as before)
+      // Chat glue (MVP)
       let me=null, peer=null, unsub=null;
       const tl = document.getElementById('timeline');
       const input = document.getElementById('msg');
@@ -338,6 +356,127 @@
         await addDoc(collection(db,'messages'), { from: me.uid, to: peer.uid, text, ts: serverTimestamp() });
         if (input) input.value = '';
       });
+
+      // Open chat helper (used by contacts modal)
+      function openChatWith(uid){
+        const url = new URL(window.location.href);
+        url.searchParams.set('peer', uid);
+        window.history.pushState({}, '', url.toString());
+        setPeerFromURL();
+        switchView('chats');
+      }
+
+      // WhatsApp-like FAB + Contacts Picker
+      const fabNew = document.getElementById('fab-new-chat');
+      const modal = document.getElementById('contacts-modal');
+      const closeBtn = document.getElementById('contacts-close');
+      const listEl = document.getElementById('contacts-list');
+      const emptyState = document.getElementById('contacts-empty');
+      const searchInput = document.getElementById('contacts-search');
+
+      function showContacts(open=true){
+        if (!modal) return;
+        modal.classList.toggle('hidden', !open);
+        if (open){ listEl.innerHTML=''; emptyState.classList.add('hidden'); loadContacts(); }
+      }
+      fabNew?.addEventListener('click', ()=> showContacts(true));
+      closeBtn?.addEventListener('click', ()=> showContacts(false));
+      modal?.addEventListener('click', (e)=>{ if(e.target===modal) showContacts(false); });
+
+      function contactRow(item){
+        const {name, phone, email, matchedUser} = item;
+        const title = name || phone || email || 'Unknown';
+        const sub = phone || email || '';
+        const div = document.createElement('div');
+        div.className = 'flex items-center gap-3 py-2';
+        div.innerHTML = `
+          <div class="w-10 h-10 rounded-full bg-gray-100 grid place-items-center font-bold">${(title||'U').slice(0,1).toUpperCase()}</div>
+          <div class="min-w-0 flex-1">
+            <div class="font-semibold truncate">${title}</div>
+            <div class="text-xs text-gray-500 truncate">${sub}</div>
+          </div>
+          <button class="tap ${matchedUser?'bg-gray-900 text-white':'bg-chat-mint text-[#12211f]'} px-3 py-1 rounded-lg text-sm">
+            ${matchedUser ? 'Message' : 'Invite'}
+          </button>
+        `;
+        div.querySelector('button').onclick = ()=>{
+          if (matchedUser){
+            openChatWith(matchedUser.uid);
+            showContacts(false);
+          }else{
+            const shareText = `Join me on Samvaad! ${location.origin}${location.pathname}`;
+            if (navigator.share) navigator.share({title:'Samvaad', text:shareText}).catch(()=>{});
+            else alert('Copy & share:\n'+shareText);
+          }
+        };
+        return div;
+      }
+
+      function normPhone(s){
+        if(!s) return null;
+        let x = String(s).replace(/[^\d+]/g,'');
+        if (x.startsWith('00')) x = '+'+x.slice(2);
+        if (!x.startsWith('+')) return null;
+        if (x.length < 10 || x.length > 16) return null;
+        return x;
+      }
+
+      async function getDeviceContacts(){
+        try{
+          if (!('contacts' in navigator) || !('select' in navigator.contacts)) return [];
+          const picked = await navigator.contacts.select(['name','tel','email'], {multiple:true});
+          if (!picked?.length) return [];
+          return picked.map(c=>{
+            const name = Array.isArray(c.name)? c.name[0] : c.name || '';
+            const tel  = Array.isArray(c.tel)?  c.tel  : c.tel || '';
+            const email= Array.isArray(c.email)?c.email: c.email || '';
+            return { name, phone: normPhone(tel), email: email? String(email).toLowerCase(): null };
+          });
+        }catch{ return []; }
+      }
+
+      async function findMatches(contacts){
+        const phones = [...new Set(contacts.map(c=>c.phone).filter(Boolean))];
+        const emails = [...new Set(contacts.map(c=>c.email).filter(Boolean))];
+        const byPhone = new Map(), byEmail = new Map();
+
+        async function batched(field, values, put){
+          for(let i=0;i<values.length;i+=10){
+            const batch = values.slice(i,i+10);
+            const qRef = query(collection(db,'users'), where(field,'in', batch));
+            const snap = await getDocs(qRef);
+            snap.forEach(d=>{ const u=d.data(); if (u[field]) put(u[field], u); });
+          }
+        }
+        if (phones.length) await batched('phone', phones, (k,v)=>byPhone.set(k,v));
+        if (emails.length) await batched('email', emails, (k,v)=>byEmail.set(k,v));
+
+        return contacts.map(c=>{
+          const match = (c.phone && byPhone.get(c.phone)) || (c.email && byEmail.get(c.email)) || null;
+          return {...c, matchedUser: match};
+        });
+      }
+
+      async function loadContacts(){
+        const contacts = await getDeviceContacts();
+        if (!contacts.length){ emptyState.classList.remove('hidden'); return; }
+        const rows = await findMatches(contacts);
+
+        function render(f=''){
+          listEl.innerHTML='';
+          let shown=0;
+          rows.filter(r=>{
+            if(!f) return true;
+            const s=f.toLowerCase();
+            return (r.name||'').toLowerCase().includes(s) || (r.phone||'').includes(s) || (r.email||'').includes(s);
+          }).forEach(r=>{ listEl.appendChild(contactRow(r)); shown++; });
+          emptyState.classList.toggle('hidden', shown>0);
+        }
+        render();
+        searchInput?.addEventListener('input', e=>render(e.target.value));
+      }
     </script>
   </body>
 </html>
+
+      
