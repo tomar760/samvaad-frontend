@@ -49,7 +49,7 @@
         <div class="flex items-center gap-2">
           <div class="hidden md:flex items-center gap-2 bg-white border border-line rounded-xl px-3 py-2">
             <svg width="18" height="18" viewBox="0 0 24 24" class="text-gray-500"><path fill="currentColor" d="m20.94 20.94l-4.36-4.36A8.5 8.5 0 1 0 18.5 17l4.36 4.36zM10.5 17a6.5 6.5 0 1 1 6.5-6.5A6.51 6.51 0 0 1 10.5 17"/></svg>
-            <input id="search" class="border-none focus:ring-0 text-sm w-56" placeholder="Search settings" />
+            <input id="search" class="border-none focus:ring-0 text-sm w-56" placeholder="Search" />
           </div>
           <button id="logout" class="tap bg-brand-600 text-white font-bold px-3 py-2 rounded-xl">Logout</button>
         </div>
@@ -81,7 +81,7 @@
             </button>
             <button class="tap flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-white border border-transparent hover:border-line" data-nav="updates">
               <span class="text-ink">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 256 256"><path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92Z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 256 256"><path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,0,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92Z"/></svg>
               </span>
               <span class="text-sm font-medium">Updates</span>
             </button>
@@ -152,110 +152,41 @@
           </footer>
         </section>
 
-        <!-- VIEW: Settings -->
+        <!-- VIEW: Settings (Placeholders only) -->
         <section id="view-settings" class="block">
-          <section class="space-y-2">
-            <h3 class="px-4 pt-2 pb-1 text-lg font-bold">Account</h3>
-            <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
-              <div class="flex items-center gap-4">
-                <div class="h-14 w-14 rounded-full bg-cover bg-center" style="background-image:url('https://i.pravatar.cc/100?img=12')"></div>
-                <div>
-                  <p class="font-medium">Profile</p>
-                  <p id="acc-name" class="text-mint-500 text-sm">Loading…</p>
-                </div>
-              </div>
-              <div class="shrink-0 text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg></div>
-            </div>
+          <div class="px-4 pt-2 pb-1">
+            <h3 class="text-lg font-bold">Settings</h3>
+          </div>
 
-            <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
-              <div class="flex items-center gap-4">
-                <div class="rounded-lg bg-mint-50 w-12 h-12 grid place-items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M222.37,158.46l-47.11-21.11-.13-.06a16,16,0,0,0-15.17,1.4,8.12,8.12,0,0,0-.75.56L134.87,160c-15.42-7.49-31.34-23.29-38.83-38.51l20.78-24.71c.2-.25.39-.5.57-.77a16,16,0,0,0,1.32-15.06l0-.12L97.54,33.64a16,16,0,0,0-16.62-9.52A56.26,56.26,0,0,0,32,80c0,79.4,64.6,144,144,144a56.26,56.26,0,0,0,55.88-48.92A16,16,0,0,0,222.37,158.46Z"/></svg>
-                </div>
-                <div>
-                  <p class="font-medium">Phone</p>
-                  <p id="acc-phone" class="text-mint-500 text-sm">—</p>
-                </div>
-              </div>
-              <div class="shrink-0 text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg></div>
-            </div>
+          <!-- Simple clickable list, all empty for now -->
+          <div class="divide-y divide-line bg-white rounded-xl border border-line mx-4 overflow-hidden">
+            <button class="w-full text-left px-4 py-3 hover:bg-mint-50">Profile</button>
+            <button class="w-full text-left px-4 py-3 hover:bg-mint-50">Phone</button>
+            <button class="w-full text-left px-4 py-3 hover:bg-mint-50">Privacy</button>
+          </div>
 
-            <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
-              <div class="flex items-center gap-4">
-                <div class="rounded-lg bg-mint-50 w-12 h-12 grid place-items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M208,80H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80Z"/></svg>
-                </div>
-                <div>
-                  <p class="font-medium">Privacy</p>
-                  <p class="text-mint-500 text-sm">Last seen recently</p>
-                </div>
-              </div>
-              <div class="shrink-0 text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg></div>
-            </div>
-          </section>
+          <div class="mt-4 divide-y divide-line bg-white rounded-xl border border-line mx-4 overflow-hidden">
+            <button class="w-full text-left px-4 py-3 hover:bg-mint-50">Notifications</button>
+          </div>
 
-          <!-- Notifications -->
-          <section class="mt-2 space-y-2">
-            <h3 class="px-4 pt-4 pb-2 text-lg font-bold">Notifications</h3>
-            <div class="flex items-center gap-4 bg-bg px-4 min-h-[72px] py-2 justify-between rounded-xl border border-line card-reveal">
-              <div class="flex items-center gap-4">
-                <div class="rounded-lg bg-mint-50 w-12 h-12 grid place-items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06Z"/></svg>
-                </div>
-                <div>
-                  <p class="font-medium">Notifications</p>
-                  <p class="text-mint-500 text-sm">Message, group & call notifications</p>
-                </div>
-              </div>
-              <div class="shrink-0 text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg></div>
-            </div>
-          </section>
+          <div class="mt-4 divide-y divide-line bg-white rounded-xl border border-line mx-4 overflow-hidden">
+            <button class="w-full text-left px-4 py-3 hover:bg-mint-50">Help center</button>
+            <button class="w-full text-left px-4 py-3 hover:bg-mint-50">Contact us</button>
+            <button class="w-full text-left px-4 py-3 hover:bg-mint-50">Terms and privacy policy</button>
+          </div>
 
-          <!-- Help -->
-          <section class="mt-2 space-y-2">
-            <h3 class="px-4 pt-4 pb-2 text-lg font-bold">Help</h3>
+          <p class="text-xs text-gray-500 px-5 mt-4">All settings are placeholders right now. We will wire them next.</p>
+        </section>
 
-            <div class="flex items-center gap-4 bg-bg px-4 min-h-14 justify-between rounded-xl border border-line card-reveal">
-              <div class="flex items-center gap-4">
-                <div class="rounded-lg bg-mint-50 w-10 h-10 grid place-items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M140,180a12,12,0,1,1-12-12A12,12,0,0,1,140,180Z"/></svg>
-                </div>
-                <p class="text-base">Help center</p>
-              </div>
-              <div class="shrink-0 text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg></div>
-            </div>
-
-            <div class="flex items-center gap-4 bg-bg px-4 min-h-14 justify-between rounded-xl border border-line card-reveal">
-              <div class="flex items-center gap-4">
-                <div class="rounded-lg bg-mint-50 w-10 h-10 grid place-items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M222.37,158.46l-47.11-21.11-.13-.06a16,16,0,0,0-15.17,1.4,8.12,8.12,0,0,0-.75.56L134.87,160c-15.42-7.49-31.34-23.29-38.83-38.51l20.78-24.71c.2-.25.39-.5.57-.77a16,16,0,0,0,1.32-15.06l0-.12L97.54,33.64a16,16,0,0,0-16.62-9.52A56.26,56.26,0,0,0,32,80c0,79.4,64.6,144,144,144a56.26,56.26,0,0,0,55.88-48.92A16,16,0,0,0,222.37,158.46Z"/></svg>
-                </div>
-                <p class="text-base">Contact us</p>
-              </div>
-              <div class="shrink-0 text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg></div>
-            </div>
-
-            <div class="flex items-center gap-4 bg-bg px-4 min-h-14 justify-between rounded-xl border border-line card-reveal">
-              <div class="flex items-center gap-4">
-                <div class="rounded-lg bg-mint-50 w-10 h-10 grid place-items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34Z"/></svg>
-                </div>
-                <p class="text-base">Terms and privacy policy</p>
-              </div>
-              <div class="shrink-0 text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg></div>
-            </div>
-          </section>
-
-          <!-- Placeholders -->
-          <section id="view-communities" class="hidden">
-            <div class="bg-white border border-line rounded-xl shadow-card p-6">Communities coming soon.</div>
-          </section>
-          <section id="view-updates" class="hidden">
-            <div class="bg-white border border-line rounded-xl shadow-card p-6">Updates coming soon.</div>
-          </section>
-          <section id="view-calls" class="hidden">
-            <div class="bg-white border border-line rounded-xl shadow-card p-6">Calls coming soon.</div>
-          </section>
+        <!-- Placeholders -->
+        <section id="view-communities" class="hidden">
+          <div class="bg-white border border-line rounded-xl shadow-card p-6">Communities coming soon.</div>
+        </section>
+        <section id="view-updates" class="hidden">
+          <div class="bg-white border border-line rounded-xl shadow-card p-6">Updates coming soon.</div>
+        </section>
+        <section id="view-calls" class="hidden">
+          <div class="bg-white border border-line rounded-xl shadow-card p-6">Calls coming soon.</div>
         </section>
       </main>
     </div>
@@ -284,8 +215,8 @@
 
       // Auth bind
       const nameEl = document.getElementById('user-name');
-      const phoneEl = document.getElementById('acc-phone');
-      const accName = document.getElementById('acc-name');
+      const phoneEl = document.getElementById('acc-phone'); // may be absent now
+      const accName = document.getElementById('acc-name');  // may be absent now
       const uidPill = document.getElementById('uid-pill');
 
       onAuthStateChanged(auth, (user)=>{
@@ -338,7 +269,7 @@
         if (btn) btn.addEventListener('click', ()=> switchView(n));
       });
 
-      // Chats glue
+      // Chats glue (MVP same as before)
       let me=null, peer=null, unsub=null;
       const tl = document.getElementById('timeline');
       const input = document.getElementById('msg');
